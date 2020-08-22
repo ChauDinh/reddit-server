@@ -1,5 +1,6 @@
 import { Resolver, Query } from "type-graphql";
 
+// The resolver for testing
 @Resolver()
 export class HelloResolver {
   // The resolver methods can be mutation or query
