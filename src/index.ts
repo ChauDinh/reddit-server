@@ -1,18 +1,47 @@
 import { MikroORM } from "@mikro-orm/core";
+import express from "express";
+import { ApolloServer } from "apollo-server-express";
+import { buildSchema } from "type-graphql";
 
 import { __prod__ } from "./constants";
 import { Post } from "./entities/Post";
 import mikroConfig from "./mikro-orm.config";
+import { HelloResolver } from "./resolvers/hello";
 
+const PORT = process.env.PORT || 4000;
+
+/**
+ * Connect to PostgreSQL database with mikro-orm
+ * Initialize express server
+ * Initialize Apollo Server for sending data to client
+ * Config mikro-orm
+ */
 const main = async () => {
-  // Create MikroORM instance
+  // Initialize and connect to PG database with mikro-orm config
   const orm = await MikroORM.init(mikroConfig);
   await orm.getMigrator().up();
-  const post = orm.em.create(Post, { title: "my first test post" });
-  await orm.em.persistAndFlush(post);
 
-  const posts = await orm.em.find(Post, {});
-  console.log(posts);
+  // Initialize express server
+  const app = express();
+
+  // Initialize apollo server
+  const apolloServer = new ApolloServer({
+    // graphql schema
+    schema: await buildSchema({
+      resolvers: [HelloResolver],
+      validate: false,
+    }),
+  });
+
+  apolloServer.applyMiddleware({ app });
+
+  app.listen(PORT, () =>
+    console.log(
+      `Server started on ${
+        __prod__ ? process.env.SERVER_URL : "localhost"
+      }:${PORT}`
+    )
+  );
 };
 
 main().catch((err) => {
