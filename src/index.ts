@@ -8,6 +8,7 @@ import { __prod__ } from "./constants";
 import mikroConfig from "./mikro-orm.config";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
+import { UserResolver } from "./resolvers/user";
 
 const PORT = process.env.PORT || 4000;
 
@@ -29,7 +30,7 @@ const main = async () => {
   const apolloServer = new ApolloServer({
     // graphql schema
     schema: await buildSchema({
-      resolvers: [HelloResolver, PostResolver],
+      resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
     }),
     // context - a special object that is accessible by all resolvers
