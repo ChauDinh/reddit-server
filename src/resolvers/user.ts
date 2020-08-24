@@ -6,6 +6,7 @@ import {
   Arg,
   Ctx,
   ObjectType,
+  Query,
 } from "type-graphql";
 import argon2 from "argon2";
 
@@ -55,6 +56,16 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() ctx: MyContext) {
+    // check whether you login or not
+    if (!ctx.req.session!.userId) {
+      return null;
+    }
+    const user = await ctx.em.findOne(User, { id: ctx.req.session!.userId });
+    return user;
+  }
+
   @Mutation(() => UserResponse, { nullable: true })
   async register(
     @Arg("options") options: RegisterInput,
@@ -175,7 +186,10 @@ export class UserResolver {
         };
       }
 
-      // if username/email and password are correct, return user
+      // if username/email and password are correct, then create session and return user
+
+      ctx.req.session!.userId = user.id;
+
       return { user };
     } catch (err) {
       console.error(err);
