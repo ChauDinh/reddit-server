@@ -6,6 +6,7 @@ import { buildSchema } from "type-graphql";
 import redis from "redis";
 import session from "express-session";
 import connectRedis from "connect-redis";
+import cors from "cors";
 
 import { __prod__ } from "./constants";
 import { MyContext } from "./types";
@@ -32,7 +33,12 @@ const main = async () => {
 
   const RedisStore = connectRedis(session);
   const redisClient = redis.createClient();
-
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    })
+  );
   app.use(
     session({
       store: new RedisStore({
@@ -64,7 +70,10 @@ const main = async () => {
     context: ({ req, res }): MyContext => ({ em: orm.em, req, res }),
   });
 
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({
+    app,
+    cors: false,
+  });
 
   app.listen(PORT, () =>
     console.log(
