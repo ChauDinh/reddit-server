@@ -162,6 +162,10 @@ export class UserResolver {
               field: "usernameOrEmail",
               message: "Incorrect username or password",
             },
+            {
+              field: "password",
+              message: "Incorrect username or password",
+            },
           ],
         };
       }
@@ -176,6 +180,10 @@ export class UserResolver {
           errors: [
             {
               field: "password",
+              message: "Incorrect username or password",
+            },
+            {
+              field: "usernameOrEmail",
               message: "Incorrect username or password",
             },
           ],
