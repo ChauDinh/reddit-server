@@ -45,7 +45,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         saveUninitialized: false,
         secret: process.env.REDIS_SECRET || "qwiwircrkiywty",
         resave: false,
-        name: "qid",
+        name: constants_1.COOKIE_NAME,
         cookie: {
             maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
             httpOnly: true,

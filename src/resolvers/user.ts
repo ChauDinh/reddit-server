@@ -13,6 +13,7 @@ import { EntityManager } from "@mikro-orm/postgresql";
 
 import { MyContext } from "./../types";
 import { User } from "./../entities/User";
+import { COOKIE_NAME } from "./../constants";
 
 // We can define an input type class for arguments instead of using multiple
 // @Arg() from type-graphql
@@ -201,5 +202,21 @@ export class UserResolver {
     } finally {
       console.log("");
     }
+  }
+
+  @Mutation(() => Boolean)
+  logout(@Ctx() { req, res }: MyContext) {
+    return new Promise((resolve, reject) =>
+      // clear cookie in reddit db
+      req.session?.destroy((err) => {
+        res.clearCookie(COOKIE_NAME); // clear cookie in browser
+        if (err) {
+          console.error(err);
+          reject(false);
+          return;
+        }
+        resolve(true);
+      })
+    );
   }
 }

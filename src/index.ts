@@ -8,7 +8,7 @@ import session from "express-session";
 import connectRedis from "connect-redis";
 import cors from "cors";
 
-import { __prod__ } from "./constants";
+import { __prod__, COOKIE_NAME } from "./constants";
 import { MyContext } from "./types";
 import mikroConfig from "./mikro-orm.config";
 import { HelloResolver } from "./resolvers/hello";
@@ -48,7 +48,7 @@ const main = async () => {
       saveUninitialized: false,
       secret: process.env.REDIS_SECRET || "qwiwircrkiywty",
       resave: false,
-      name: "qid",
+      name: COOKIE_NAME,
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
         httpOnly: true,
