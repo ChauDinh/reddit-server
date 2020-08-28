@@ -15,7 +15,7 @@ export class User {
   createdAt = new Date();
 
   @Field(() => String)
-  @Property({ type: "date", onUpdate: () => new Date() })
+  @Property({ type: "date", onUpdate: () => new Date() }) // this hook will automatically update for us
   updatedAt = new Date();
 
   @Field()

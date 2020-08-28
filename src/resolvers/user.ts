@@ -10,10 +10,12 @@ import {
 } from "type-graphql";
 import argon2 from "argon2";
 import { EntityManager } from "@mikro-orm/postgresql";
+import { v4 } from "uuid";
 
 import { MyContext } from "./../types";
 import { User } from "./../entities/User";
-import { COOKIE_NAME } from "./../constants";
+import { COOKIE_NAME, FORGOT_PASSWORD_PREFIX } from "./../constants";
+import { sendEmail } from "../utils/sendEmail";
 
 // We can define an input type class for arguments instead of using multiple
 // @Arg() from type-graphql
@@ -80,6 +82,17 @@ export class UserResolver {
           {
             field: "username",
             message: "The username is too short",
+          },
+        ],
+      };
+    }
+    // validate register email input (check the length)
+    if (options.email.length <= 2) {
+      return {
+        errors: [
+          {
+            field: "email",
+            message: "The email is too short",
           },
         ],
       };
@@ -218,5 +231,91 @@ export class UserResolver {
         resolve(true);
       })
     );
+  }
+
+  @Mutation(() => Boolean)
+  async forgotPassword(
+    @Arg("email") email: string,
+    @Ctx() { em, redis }: MyContext
+  ) {
+    const user = await em.findOne(User, { email });
+    // the email is not in database
+    if (!user) {
+      return true; // don't do anything with wrong email try to forgot password
+    }
+
+    // create token with uuid version 4
+    const token = v4();
+
+    // store token into ioredis
+    await redis.set(
+      FORGOT_PASSWORD_PREFIX + token,
+      user.id,
+      "ex",
+      1000 * 60 * 60 * 24 // 1 day expire
+    );
+
+    await sendEmail(
+      email,
+      `
+      <a href="http://localhost:3000/change-password/${token}">Click here to reset the password</a>
+    `
+    );
+    return true;
+  }
+
+  @Mutation(() => UserResponse)
+  async changePassword(
+    @Arg("token") token: string,
+    @Arg("newPassword") newPassword: string,
+    @Ctx() { redis, em, req }: MyContext
+  ): Promise<UserResponse> {
+    // validate new password (check length <=2)
+    if (newPassword.length <= 2) {
+      return {
+        errors: [
+          {
+            field: "newPassword",
+            message: "password is too short",
+          },
+        ],
+      };
+    }
+
+    // check userId
+    const key = FORGOT_PASSWORD_PREFIX + token;
+    const userId = await redis.get(key);
+    if (!userId) {
+      return {
+        errors: [
+          {
+            field: "token",
+            message: "token expired",
+          },
+        ],
+      };
+    }
+
+    const user = await em.findOne(User, { id: parseInt(userId) });
+    if (!user) {
+      return {
+        errors: [
+          {
+            field: "token",
+            message: "user no longer exists",
+          },
+        ],
+      };
+    }
+
+    user.password = await argon2.hash(newPassword);
+    await em.persistAndFlush(user);
+
+    await redis.del(key);
+
+    // login user after change password
+    req.session!.userId = user.id;
+
+    return { user };
   }
 }
