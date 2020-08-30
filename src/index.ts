@@ -1,5 +1,4 @@
 import "reflect-metadata";
-import { MikroORM } from "@mikro-orm/core";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
@@ -7,13 +6,15 @@ import Redis from "ioredis";
 import session from "express-session";
 import connectRedis from "connect-redis";
 import cors from "cors";
+import { createConnection } from "typeorm";
 
 import { __prod__, COOKIE_NAME } from "./constants";
-import { MyContext } from "./types";
-import mikroConfig from "./mikro-orm.config";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
+import { User } from "./entities/User";
+import { Post } from "./entities/Post";
+import { MyContext } from "./types";
 
 const PORT = process.env.PORT || 4000;
 
@@ -24,9 +25,16 @@ const PORT = process.env.PORT || 4000;
  * Config mikro-orm
  */
 const main = async () => {
-  // Initialize and connect to PG database with mikro-orm config
-  const orm = await MikroORM.init(mikroConfig);
-  await orm.getMigrator().up();
+  // Initialize and connect to PG database with type-orm config
+  const conn = await createConnection({
+    type: "postgres",
+    database: "redditclone",
+    username: process.env.DB_USERNAME || "chaudinh",
+    password: process.env.DB_PASSWORD || "katetsui1995",
+    logging: true,
+    synchronize: true,
+    entities: [User, Post],
+  });
 
   // Initialize express server
   const app = express();
@@ -67,7 +75,7 @@ const main = async () => {
     }),
     // context - a special object that is accessible by all resolvers
     // we pass our ORM into the context so that our resolvers can work with database
-    context: ({ req, res }): MyContext => ({ em: orm.em, req, res, redis }),
+    context: ({ req, res }): MyContext => ({ req, res, redis }),
   });
 
   apolloServer.applyMiddleware({
