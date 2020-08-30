@@ -75,7 +75,7 @@ const main = async () => {
     }),
     // context - a special object that is accessible by all resolvers
     // we pass our ORM into the context so that our resolvers can work with database
-    context: ({ req, res }): MyContext => ({ req, res, redis }),
+    context: ({ req, res }) => ({ req, res, redis }),
   });
 
   apolloServer.applyMiddleware({

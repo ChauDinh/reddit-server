@@ -1,4 +1,3 @@
-// import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
 import {
   Entity,
   Column,
@@ -6,8 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   BaseEntity,
+  OneToMany,
 } from "typeorm";
 import { ObjectType, Field } from "type-graphql";
+import { Post } from "./Post";
 
 // Convert entity to object type so that we can use to declare graphql type in resolvers
 @ObjectType()
@@ -36,4 +37,7 @@ export class User extends BaseEntity {
 
   @Column() // we don't allow to expose user's password to graphql schema
   password!: string;
+
+  @OneToMany(() => Post, (post) => post.creator)
+  posts: Post[];
 }

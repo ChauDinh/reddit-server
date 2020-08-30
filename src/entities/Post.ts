@@ -7,7 +7,9 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
   BaseEntity,
+  ManyToOne,
 } from "typeorm";
+import { User } from "./User";
 
 // Convert entity to object type so that we can use to declare graphql type in resolvers
 @ObjectType()
@@ -29,4 +31,19 @@ export class Post extends BaseEntity {
   @Field()
   @Column()
   title!: string;
+
+  @Field()
+  @Column()
+  text!: string;
+
+  @Field()
+  @Column({ type: "int", default: 0 })
+  points!: number;
+
+  @Field()
+  @Column()
+  creatorId: number;
+
+  @ManyToOne(() => User, (user) => user.posts)
+  creator: User;
 }
