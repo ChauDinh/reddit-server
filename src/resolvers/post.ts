@@ -1,3 +1,4 @@
+import { getConnection } from "typeorm";
 import {
   Resolver,
   Query,
@@ -7,6 +8,7 @@ import {
   Field,
   Ctx,
   UseMiddleware,
+  Int,
 } from "type-graphql";
 
 import { Post } from "./../entities/Post";
@@ -25,8 +27,24 @@ class PostInput {
 @Resolver()
 export class PostResolver {
   @Query(() => [Post]) // The `posts` resolver will return an array of posts.
-  async posts(): Promise<Post[]> {
-    return Post.find();
+  async posts(
+    @Arg("limit", () => Int) limit: number,
+    @Arg("cursor", () => String, { nullable: true }) cursor: string | null // cursor here is the date a post was created
+  ): Promise<Post[]> {
+    const realLimit = Math.min(50, limit);
+    const queryBuilder = getConnection()
+      .getRepository(Post)
+      .createQueryBuilder("p")
+      .orderBy('"createdAt"', "DESC") // the newest would be displayed on the top
+      .take(realLimit);
+
+    if (cursor) {
+      queryBuilder.where('"createdAt" < :cursor', {
+        cursor: new Date(parseInt(cursor)),
+      });
+    }
+
+    return queryBuilder.getMany();
   }
 
   @Query(() => Post, { nullable: true }) // The `post` resolver will return a post specified by ID and allow nullable result
