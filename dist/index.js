@@ -21,6 +21,7 @@ const express_session_1 = __importDefault(require("express-session"));
 const connect_redis_1 = __importDefault(require("connect-redis"));
 const cors_1 = __importDefault(require("cors"));
 const typeorm_1 = require("typeorm");
+const path_1 = __importDefault(require("path"));
 const constants_1 = require("./constants");
 const hello_1 = require("./resolvers/hello");
 const post_1 = require("./resolvers/post");
@@ -36,8 +37,10 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         password: process.env.DB_PASSWORD || "katetsui1995",
         logging: true,
         synchronize: true,
+        migrations: [path_1.default.join(__dirname, "./migrations/*")],
         entities: [User_1.User, Post_1.Post],
     });
+    yield conn.runMigrations();
     const app = express_1.default();
     const RedisStore = connect_redis_1.default(express_session_1.default);
     const redis = new ioredis_1.default();

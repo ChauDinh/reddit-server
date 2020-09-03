@@ -7,6 +7,7 @@ import session from "express-session";
 import connectRedis from "connect-redis";
 import cors from "cors";
 import { createConnection } from "typeorm";
+import path from "path";
 
 import { __prod__, COOKIE_NAME } from "./constants";
 import { HelloResolver } from "./resolvers/hello";
@@ -14,7 +15,6 @@ import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
 import { User } from "./entities/User";
 import { Post } from "./entities/Post";
-import { MyContext } from "./types";
 
 const PORT = process.env.PORT || 4000;
 
@@ -33,8 +33,13 @@ const main = async () => {
     password: process.env.DB_PASSWORD || "katetsui1995",
     logging: true,
     synchronize: true,
+    migrations: [path.join(__dirname, "./migrations/*")],
     entities: [User, Post],
   });
+
+  await conn.runMigrations();
+
+  // await Post.delete({});
 
   // Initialize express server
   const app = express();

@@ -9,6 +9,9 @@ import {
   Ctx,
   UseMiddleware,
   Int,
+  FieldResolver,
+  Root,
+  ObjectType,
 } from "type-graphql";
 
 import { Post } from "./../entities/Post";
@@ -24,19 +27,33 @@ class PostInput {
   text: string;
 }
 
-@Resolver()
+@ObjectType()
+class PaginatedPosts {
+  @Field(() => [Post])
+  posts: Post[];
+  @Field()
+  hasMore: boolean;
+}
+
+@Resolver(Post)
 export class PostResolver {
-  @Query(() => [Post]) // The `posts` resolver will return an array of posts.
+  // The textSnippet resolver for slicing the text of the post, @FieldResolver doesn't effect to database
+  @FieldResolver(() => String)
+  textSnippet(@Root() root: Post) {
+    return root.text.slice(0, 100) + " ...";
+  }
+
+  @Query(() => PaginatedPosts) // The `posts` resolver will return an array of posts.
   async posts(
     @Arg("limit", () => Int) limit: number,
     @Arg("cursor", () => String, { nullable: true }) cursor: string | null // cursor here is the date a post was created
-  ): Promise<Post[]> {
+  ): Promise<PaginatedPosts> {
     const realLimit = Math.min(50, limit);
     const queryBuilder = getConnection()
       .getRepository(Post)
       .createQueryBuilder("p")
       .orderBy('"createdAt"', "DESC") // the newest would be displayed on the top
-      .take(realLimit);
+      .take(realLimit + 1);
 
     if (cursor) {
       queryBuilder.where('"createdAt" < :cursor', {
@@ -44,7 +61,11 @@ export class PostResolver {
       });
     }
 
-    return queryBuilder.getMany();
+    const posts = await queryBuilder.getMany();
+    return {
+      posts: posts.slice(0, realLimit),
+      hasMore: posts.length === realLimit + 1,
+    };
   }
 
   @Query(() => Post, { nullable: true }) // The `post` resolver will return a post specified by ID and allow nullable result
