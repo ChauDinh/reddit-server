@@ -7,6 +7,8 @@ import {
   Ctx,
   ObjectType,
   Query,
+  FieldResolver,
+  Root,
 } from "type-graphql";
 import argon2 from "argon2";
 import { v4 } from "uuid";
@@ -60,6 +62,16 @@ class UserResponse {
 
 @Resolver(User)
 export class UserResolver {
+  @FieldResolver(() => String)
+  email(@Root() user: User, @Ctx() { req }: MyContext) {
+    // this is the current user and it's ok to show them their own email
+    if (req.session.userId === user.id) {
+      return user.email;
+    }
+    // current user can't see someone else email
+    return "";
+  }
+
   @Query(() => User, { nullable: true })
   async me(@Ctx() { req }: MyContext) {
     // check whether you login or not
