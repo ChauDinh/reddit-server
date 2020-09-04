@@ -17,6 +17,7 @@ import {
 import { Post } from "./../entities/Post";
 import { MyContext } from "./../types";
 import { isAuth } from "./../middlewares/isAuth";
+import { Updoot } from "./../entities/Updoot";
 
 @InputType()
 class PostInput {
@@ -93,7 +94,6 @@ export class PostResolver {
     // }
 
     // const posts = await queryBuilder.getMany();
-    console.log("posts: ", posts);
     return {
       posts: posts.slice(0, realLimit),
       hasMore: posts.length === realLimit + 1,
@@ -142,5 +142,39 @@ export class PostResolver {
       console.error(err);
       return false;
     }
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async vote(
+    @Arg("postId", () => Int) postId: number,
+    @Arg("value", () => Int) value: number,
+    @Ctx() { req }: MyContext
+  ) {
+    const { userId } = req.session;
+    const isUpdoot = value !== -1;
+    const updootValue = isUpdoot ? 1 : -1;
+    // await Updoot.insert({
+    //   userId,
+    //   postId,
+    //   value: updootValue,
+    // });
+
+    await getConnection().query(
+      `
+      START TRANSACTION;
+
+      insert into updoot ("userId", "postId", value)
+      values (${userId},${postId},${updootValue});
+
+      update post
+      set points = points + ${updootValue}
+      where id = ${postId};
+
+      COMMIT;
+    `
+    );
+
+    return true;
   }
 }
