@@ -1,5 +1,5 @@
 // import { Entity, PrimaryKey } from "@mikro-orm/core";
-import { ObjectType, Field } from "type-graphql";
+import { ObjectType, Field, Int } from "type-graphql";
 import {
   Entity,
   Column,
@@ -49,6 +49,9 @@ export class Post extends BaseEntity {
   @Field()
   @ManyToOne(() => User, (user) => user.posts)
   creator: User;
+
+  @Field(() => Int, { nullable: true })
+  voteStatus: number | null;
 
   @OneToMany(() => Updoot, (updoot) => updoot.post)
   updoots: Updoot[];

@@ -47,11 +47,12 @@ export class PostResolver {
   @Query(() => PaginatedPosts) // The `posts` resolver will return an array of posts.
   async posts(
     @Arg("limit", () => Int) limit: number,
-    @Arg("cursor", () => String, { nullable: true }) cursor: string | null // cursor here is the date a post was created
+    @Arg("cursor", () => String, { nullable: true }) cursor: string | null, // cursor here is the date a post was created
+    @Ctx() { req }: MyContext
   ): Promise<PaginatedPosts> {
     const realLimit = Math.min(50, limit);
 
-    const replacements: any[] = [realLimit + 1];
+    const replacements: any[] = [realLimit + 1, req.session.userId];
     if (cursor) {
       replacements.push(new Date(parseInt(cursor)));
     }
@@ -64,13 +65,18 @@ export class PostResolver {
         'email', u.email,
         'createdAt', u."createdAt",
         'updatedAt', u."updatedAt"
-        ) creator
+        ) creator,
+      ${
+        req.session.userId
+          ? '(select value from updoot where "userId" = $2 and "postId" = p.id) "voteStatus"'
+          : 'null as "voteStatus'
+      }
       from post p 
       inner join "user" u on u.id = p."creatorId"
       ${
         cursor
           ? `
-        where p."createdAt" < $2
+        where p."createdAt" < $3
       `
           : ""
       }
@@ -160,20 +166,52 @@ export class PostResolver {
     //   value: updootValue,
     // });
 
-    await getConnection().query(
-      `
-      START TRANSACTION;
+    const updoot = await Updoot.findOne({ where: { postId, userId } });
 
-      insert into updoot ("userId", "postId", value)
-      values (${userId},${postId},${updootValue});
+    // there are three stages of updoot
+    if (updoot && updoot.value !== updootValue) {
+      // the user has up voted on the post before and then down voted or down
+      // voted then up voted
+      await getConnection().transaction(async (transaction) => {
+        await transaction.query(
+          `
+          update updoot
+          set value = $1
+          where "postId" = $2 and "userId" = $3
+        `,
+          [updootValue, postId, userId]
+        );
 
-      update post
-      set points = points + ${updootValue}
-      where id = ${postId};
-
-      COMMIT;
-    `
-    );
+        // update points of the post
+        await transaction.query(
+          `
+          update post
+          set points = points + $1
+          where id = $2
+        `,
+          [2 * updootValue, postId]
+        );
+      });
+    } else if (!updoot) {
+      // the user has not voted the post yet
+      await getConnection().transaction(async (transaction) => {
+        await transaction.query(
+          `
+          insert into updoot ("userId", "postId", value)
+          values ($1,$2,$3)
+        `,
+          [userId, postId, updootValue]
+        );
+        await transaction.query(
+          `
+          update post
+          set points = points + $1
+          where id = $2
+        `,
+          [updootValue, postId]
+        );
+      });
+    }
 
     return true;
   }
