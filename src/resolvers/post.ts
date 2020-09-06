@@ -133,19 +133,24 @@ export class PostResolver {
   }
 
   @Mutation(() => Post, { nullable: true }) // The `updatePost` resolver is a mutation which allows us update current post
+  @UseMiddleware(isAuth)
   async updatePost(
-    @Arg("id") id: number,
-    @Arg("title", () => String, { nullable: true }) title: string
+    @Arg("id", () => Int) id: number,
+    @Arg("title", () => String, { nullable: true }) title: string,
+    @Arg("text", () => String, { nullable: true }) text: string,
+    @Ctx() { req }: MyContext
   ): Promise<Post | null> {
-    const currPost = await Post.findOne({ where: { id } });
-    if (!currPost) {
-      return null;
-    }
-    if (typeof title !== "undefined") {
-      currPost.title = title;
-      await Post.update({ id }, { title });
-    }
-    return currPost;
+    const result = await getConnection()
+      .createQueryBuilder()
+      .update(Post)
+      .set({ title, text })
+      .where('id = :id and "creatorId" = :creatorId', {
+        id,
+        creatorId: req.session.userId,
+      })
+      .returning("*")
+      .execute();
+    return result.raw[0];
   }
 
   @Mutation(() => Boolean) // The `deletePost` resolver is a mutation which allows us delete specific post (by ID)
@@ -155,14 +160,19 @@ export class PostResolver {
     @Ctx() { req }: MyContext
   ): Promise<boolean> {
     try {
-      const post = await Post.findOne(id);
-      if (!post) return false;
-      if (post.creatorId !== req.session.userId) {
-        throw new Error("not authorized");
-      }
+      /**Not Cascading method */
+      // const post = await Post.findOne(id);
+      // if (!post) return false;
+      // if (post.creatorId !== req.session.userId) {
+      //   throw new Error("not authorized");
+      // }
 
-      await Updoot.delete({ postId: id });
-      await Post.delete({ id });
+      // await Updoot.delete({ postId: id });
+      // await Post.delete({ id });
+      // return true;
+
+      /**Cascading mathod */
+      await Post.delete({ id, creatorId: req.session.userId });
       return true;
     } catch (err) {
       console.error(err);
