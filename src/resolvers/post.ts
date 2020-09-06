@@ -149,9 +149,20 @@ export class PostResolver {
   }
 
   @Mutation(() => Boolean) // The `deletePost` resolver is a mutation which allows us delete specific post (by ID)
-  async deletePost(@Arg("id") id: number): Promise<boolean> {
+  @UseMiddleware(isAuth)
+  async deletePost(
+    @Arg("id", () => Int) id: number,
+    @Ctx() { req }: MyContext
+  ): Promise<boolean> {
     try {
-      await Post.delete(id);
+      const post = await Post.findOne(id);
+      if (!post) return false;
+      if (post.creatorId !== req.session.userId) {
+        throw new Error("not authorized");
+      }
+
+      await Updoot.delete({ postId: id });
+      await Post.delete({ id });
       return true;
     } catch (err) {
       console.error(err);
@@ -169,11 +180,6 @@ export class PostResolver {
     const { userId } = req.session;
     const isUpdoot = value !== -1;
     const updootValue = isUpdoot ? 1 : -1;
-    // await Updoot.insert({
-    //   userId,
-    //   postId,
-    //   value: updootValue,
-    // });
 
     const updoot = await Updoot.findOne({ where: { postId, userId } });
 
@@ -221,7 +227,6 @@ export class PostResolver {
         );
       });
     }
-
     return true;
   }
 }
