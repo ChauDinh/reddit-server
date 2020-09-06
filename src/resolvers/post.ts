@@ -41,7 +41,9 @@ export class PostResolver {
   // The textSnippet resolver for slicing the text of the post, @FieldResolver doesn't effect to database
   @FieldResolver(() => String)
   textSnippet(@Root() root: Post) {
-    return root.text.slice(0, 100) + " ...";
+    return root.text.length > 100
+      ? root.text.slice(0, 100) + " ..."
+      : root.text;
   }
 
   @Query(() => PaginatedPosts) // The `posts` resolver will return an array of posts.
@@ -52,9 +54,16 @@ export class PostResolver {
   ): Promise<PaginatedPosts> {
     const realLimit = Math.min(50, limit);
 
-    const replacements: any[] = [realLimit + 1, req.session.userId];
+    const replacements: any[] = [realLimit + 1];
+
+    if (req.session.userId) {
+      replacements.push(req.session.userId);
+    }
+
+    let cursorIdx = 3;
     if (cursor) {
       replacements.push(new Date(parseInt(cursor)));
+      cursorIdx = replacements.length;
     }
     const posts = await getConnection().query(
       `
@@ -69,14 +78,14 @@ export class PostResolver {
       ${
         req.session.userId
           ? '(select value from updoot where "userId" = $2 and "postId" = p.id) "voteStatus"'
-          : 'null as "voteStatus'
+          : 'null as "voteStatus"'
       }
       from post p 
       inner join "user" u on u.id = p."creatorId"
       ${
         cursor
           ? `
-        where p."createdAt" < $3
+        where p."createdAt" < $${cursorIdx}
       `
           : ""
       }
@@ -107,8 +116,8 @@ export class PostResolver {
   }
 
   @Query(() => Post, { nullable: true }) // The `post` resolver will return a post specified by ID and allow nullable result
-  async post(@Arg("id") id: number): Promise<Post | undefined> {
-    return Post.findOne(id);
+  async post(@Arg("id", () => Int) id: number): Promise<Post | undefined> {
+    return Post.findOne(id, { relations: ["creator"] });
   }
 
   @Mutation(() => Post) // The `createPost` resolver is a mutation which allows us create new post

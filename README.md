@@ -20,3 +20,18 @@ Since we use redis to store our sessions, it would look something like this: `{u
 
 - Now, the server will send `{userId: 1}` to client and store it in
   `req.session`.
+
+### Explain SSR cookie
+
+- The first time we go to the page (index.js), it is server side rendering
+  (ssr):
+
+browser => nextjs server => graphql apis
+
+browser sends the cookie to next.js server
+
+- Later requests are client side rendering:
+
+browser => graphql apis
+
+browser sends the cookie to graphql apis.
