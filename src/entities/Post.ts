@@ -1,4 +1,3 @@
-// import { Entity, PrimaryKey } from "@mikro-orm/core";
 import { ObjectType, Field, Int } from "type-graphql";
 import {
   Entity,

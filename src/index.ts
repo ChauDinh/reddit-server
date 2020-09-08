@@ -1,21 +1,22 @@
-import "reflect-metadata";
-import express from "express";
 import { ApolloServer } from "apollo-server-express";
-import { buildSchema } from "type-graphql";
-import Redis from "ioredis";
-import session from "express-session";
 import connectRedis from "connect-redis";
 import cors from "cors";
-import { createConnection } from "typeorm";
+import express from "express";
+import session from "express-session";
+import Redis from "ioredis";
 import path from "path";
-
-import { __prod__, COOKIE_NAME } from "./constants";
+import "reflect-metadata";
+import { buildSchema } from "type-graphql";
+import { createConnection } from "typeorm";
+import { COOKIE_NAME, __prod__ } from "./constants";
+import { Post } from "./entities/Post";
+import { Updoot } from "./entities/Updoot";
+import { User } from "./entities/User";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
-import { User } from "./entities/User";
-import { Post } from "./entities/Post";
-import { Updoot } from "./entities/Updoot";
+import { createUserLoader } from "./utils/createUserLoader";
+import { createUpdootLoader } from "./utils/createUpdootLoader";
 
 const PORT = process.env.PORT || 4000;
 
@@ -81,7 +82,13 @@ const main = async () => {
     }),
     // context - a special object that is accessible by all resolvers
     // we pass our ORM into the context so that our resolvers can work with database
-    context: ({ req, res }) => ({ req, res, redis }),
+    context: ({ req, res }) => ({
+      req,
+      res,
+      redis,
+      userLoader: createUserLoader(),
+      updootLoader: createUpdootLoader(),
+    }),
   });
 
   apolloServer.applyMiddleware({
