@@ -70,8 +70,7 @@ export class PostResolver {
   @Query(() => PaginatedPosts) // The `posts` resolver will return an array of posts.
   async posts(
     @Arg("limit", () => Int) limit: number,
-    @Arg("cursor", () => String, { nullable: true }) cursor: string | null, // cursor here is the date a post was created
-    @Ctx() { req }: MyContext
+    @Arg("cursor", () => String, { nullable: true }) cursor: string | null // cursor here is the date a post was created
   ): Promise<PaginatedPosts> {
     const realLimit = Math.min(50, limit);
 
