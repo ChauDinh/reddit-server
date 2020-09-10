@@ -1,13 +1,14 @@
+import "reflect-metadata";
+import "dotenv-safe/config";
 import { ApolloServer } from "apollo-server-express";
 import connectRedis from "connect-redis";
 import cors from "cors";
 import express from "express";
 import session from "express-session";
 import Redis from "ioredis";
-import path from "path";
-import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
+import path from "path";
 import { COOKIE_NAME, __prod__ } from "./constants";
 import { Post } from "./entities/Post";
 import { Updoot } from "./entities/Updoot";
@@ -15,10 +16,10 @@ import { User } from "./entities/User";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
-import { createUserLoader } from "./utils/createUserLoader";
 import { createUpdootLoader } from "./utils/createUpdootLoader";
+import { createUserLoader } from "./utils/createUserLoader";
 
-const PORT = process.env.PORT || 4000;
+const PORT = parseInt(process.env.PORT) || 4000;
 
 /**
  * Connect to PostgreSQL database with mikro-orm
@@ -30,27 +31,26 @@ const main = async () => {
   // Initialize and connect to PG database with type-orm config
   const conn = await createConnection({
     type: "postgres",
-    database: "redditclone",
-    username: process.env.DB_USERNAME || "chaudinh",
-    password: process.env.DB_PASSWORD || "katetsui1995",
+    url: process.env.DATABASE_URL,
     logging: true,
-    synchronize: true,
+    // synchronize: true,
     migrations: [path.join(__dirname, "./migrations/*")],
     entities: [User, Post, Updoot],
   });
 
-  await conn.runMigrations();
-
   // await Post.delete({});
+
+  await conn.runMigrations();
 
   // Initialize express server
   const app = express();
 
   const RedisStore = connectRedis(session);
-  const redis = new Redis();
+  const redis = new Redis(process.env.REDIS_URL);
+  app.set("proxy", 1);
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: process.env.CORS_ORIGIN,
       credentials: true,
     })
   );
@@ -61,7 +61,7 @@ const main = async () => {
         disableTouch: true,
       }),
       saveUninitialized: false,
-      secret: process.env.REDIS_SECRET || "qwiwircrkiywty",
+      secret: process.env.SESSION_SECRET || "qwiwircrkiywty",
       resave: false,
       name: COOKIE_NAME,
       cookie: {
@@ -69,6 +69,7 @@ const main = async () => {
         httpOnly: true,
         secure: __prod__, // cookie only works in https except (localhost http)
         sameSite: "lax", // CSRF
+        domain: __prod__ ? ".amanlearnscode.com" : undefined,
       },
     })
   );

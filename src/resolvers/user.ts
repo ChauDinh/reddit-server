@@ -1,23 +1,22 @@
+import argon2 from "argon2";
 import {
-  Resolver,
-  Mutation,
-  InputType,
-  Field,
   Arg,
   Ctx,
+  Field,
+  FieldResolver,
+  InputType,
+  Mutation,
   ObjectType,
   Query,
-  FieldResolver,
+  Resolver,
   Root,
 } from "type-graphql";
-import argon2 from "argon2";
-import { v4 } from "uuid";
 import { getConnection } from "typeorm";
-
-import { MyContext } from "./../types";
-import { User } from "./../entities/User";
-import { COOKIE_NAME, FORGOT_PASSWORD_PREFIX } from "./../constants";
+import { v4 } from "uuid";
 import { sendEmail } from "../utils/sendEmail";
+import { COOKIE_NAME, FORGOT_PASSWORD_PREFIX } from "./../constants";
+import { User } from "./../entities/User";
+import { MyContext } from "./../types";
 
 // We can define an input type class for arguments instead of using multiple
 // @Arg() from type-graphql
