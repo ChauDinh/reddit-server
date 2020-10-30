@@ -1,3 +1,4 @@
+import { CommentResolver } from "./resolvers/comment";
 import "reflect-metadata";
 import "dotenv-safe/config";
 import { ApolloServer } from "apollo-server-express";
@@ -8,7 +9,6 @@ import session from "express-session";
 import Redis from "ioredis";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
-import path from "path";
 import { COOKIE_NAME, __prod__ } from "./constants";
 import { Post } from "./entities/Post";
 import { Updoot } from "./entities/Updoot";
@@ -18,6 +18,7 @@ import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
 import { createUpdootLoader } from "./utils/createUpdootLoader";
 import { createUserLoader } from "./utils/createUserLoader";
+import { Comment } from "./entities/Comment";
 
 const PORT = parseInt(process.env.PORT) || 4000;
 
@@ -29,18 +30,18 @@ const PORT = parseInt(process.env.PORT) || 4000;
  */
 const main = async () => {
   // Initialize and connect to PG database with type-orm config
-  const conn = await createConnection({
+  await createConnection({
     type: "postgres",
     url: process.env.DATABASE_URL,
     logging: true,
-    // synchronize: true,
-    migrations: [path.join(__dirname, "./migrations/*")],
-    entities: [User, Post, Updoot],
+    synchronize: true,
+    // migrations: [path.join(__dirname, "./migrations/*")],
+    entities: [User, Post, Updoot, Comment],
   });
 
   // await Post.delete({});
 
-  await conn.runMigrations();
+  // await conn.runMigrations();
 
   // Initialize express server
   const app = express();
@@ -78,7 +79,7 @@ const main = async () => {
   const apolloServer = new ApolloServer({
     // graphql schema
     schema: await buildSchema({
-      resolvers: [HelloResolver, PostResolver, UserResolver],
+      resolvers: [HelloResolver, PostResolver, UserResolver, CommentResolver],
       validate: false,
     }),
     // context - a special object that is accessible by all resolvers

@@ -10,6 +10,7 @@ import {
   OneToMany,
 } from "typeorm";
 import { User } from "./User";
+import { Comment } from "./Comment";
 import { Updoot } from "./Updoot";
 
 // Convert entity to object type so that we can use to declare graphql type in resolvers
@@ -45,7 +46,7 @@ export class Post extends BaseEntity {
   @Column()
   creatorId: number;
 
-  @Field()
+  @Field(() => User)
   @ManyToOne(() => User, (user) => user.posts)
   creator: User;
 
@@ -54,4 +55,8 @@ export class Post extends BaseEntity {
 
   @OneToMany(() => Updoot, (updoot) => updoot.post)
   updoots: Updoot[];
+
+  @Field(() => Comment)
+  @OneToMany(() => Comment, (comment) => comment.commentPost)
+  comments: Comment[];
 }
