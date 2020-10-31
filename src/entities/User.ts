@@ -1,3 +1,4 @@
+import { Comment } from "./Comment";
 import { Updoot } from "./Updoot";
 import {
   Entity,
@@ -41,6 +42,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Post, (post) => post.creator)
   posts: Post[];
+
+  @OneToMany(() => Comment, (comment) => comment.commentCreator)
+  comments: Comment[];
 
   @OneToMany(() => Updoot, (updoot) => updoot.user)
   updoots: Updoot[];

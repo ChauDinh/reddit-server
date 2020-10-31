@@ -13,6 +13,7 @@ exports.Post = void 0;
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
 const User_1 = require("./User");
+const Comment_1 = require("./Comment");
 const Updoot_1 = require("./Updoot");
 let Post = class Post extends typeorm_1.BaseEntity {
 };
@@ -52,7 +53,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Post.prototype, "creatorId", void 0);
 __decorate([
-    type_graphql_1.Field(),
+    type_graphql_1.Field(() => User_1.User),
     typeorm_1.ManyToOne(() => User_1.User, (user) => user.posts),
     __metadata("design:type", User_1.User)
 ], Post.prototype, "creator", void 0);
@@ -64,6 +65,11 @@ __decorate([
     typeorm_1.OneToMany(() => Updoot_1.Updoot, (updoot) => updoot.post),
     __metadata("design:type", Array)
 ], Post.prototype, "updoots", void 0);
+__decorate([
+    type_graphql_1.Field(() => Comment_1.Comment),
+    typeorm_1.OneToMany(() => Comment_1.Comment, (comment) => comment.commentPost),
+    __metadata("design:type", Array)
+], Post.prototype, "comments", void 0);
 Post = __decorate([
     type_graphql_1.ObjectType(),
     typeorm_1.Entity()
