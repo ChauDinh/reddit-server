@@ -58,7 +58,7 @@ export class CommentResolver {
         postId,
       },
       order: {
-        createdAt: "DESC",
+        createdAt: "ASC",
       },
     });
     console.log(results);
