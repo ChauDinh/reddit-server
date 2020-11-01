@@ -57,6 +57,9 @@ export class CommentResolver {
       where: {
         postId,
       },
+      order: {
+        createdAt: "DESC",
+      },
     });
     console.log(results);
     return {
