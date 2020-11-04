@@ -30,7 +30,7 @@ const PORT = parseInt(process.env.PORT) || 4000;
  */
 const main = async () => {
   // Initialize and connect to PG database with type-orm config
-  await createConnection({
+  let conn = await createConnection({
     type: "postgres",
     url: process.env.DATABASE_URL,
     logging: true,
@@ -41,7 +41,7 @@ const main = async () => {
 
   // await Post.delete({});
 
-  // await conn.runMigrations();
+  await conn.runMigrations();
 
   // Initialize express server
   const app = express();

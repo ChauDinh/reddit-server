@@ -35,13 +35,14 @@ const createUserLoader_1 = require("./utils/createUserLoader");
 const Comment_1 = require("./entities/Comment");
 const PORT = parseInt(process.env.PORT) || 4000;
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
-    yield typeorm_1.createConnection({
+    let conn = yield typeorm_1.createConnection({
         type: "postgres",
         url: process.env.DATABASE_URL,
         logging: true,
         synchronize: true,
         entities: [User_1.User, Post_1.Post, Updoot_1.Updoot, Comment_1.Comment],
     });
+    yield conn.runMigrations();
     const app = express_1.default();
     const RedisStore = connect_redis_1.default(express_session_1.default);
     const redis = new ioredis_1.default(process.env.REDIS_URL);
