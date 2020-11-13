@@ -67,7 +67,9 @@ __decorate([
 ], Post.prototype, "updoots", void 0);
 __decorate([
     type_graphql_1.Field(() => Comment_1.Comment),
-    typeorm_1.OneToMany(() => Comment_1.Comment, (comment) => comment.commentPost),
+    typeorm_1.OneToMany(() => Comment_1.Comment, (comment) => comment.commentPost, {
+        onDelete: "CASCADE",
+    }),
     __metadata("design:type", Array)
 ], Post.prototype, "comments", void 0);
 Post = __decorate([

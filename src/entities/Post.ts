@@ -57,6 +57,8 @@ export class Post extends BaseEntity {
   updoots: Updoot[];
 
   @Field(() => Comment)
-  @OneToMany(() => Comment, (comment) => comment.commentPost)
+  @OneToMany(() => Comment, (comment) => comment.commentPost, {
+    onDelete: "CASCADE",
+  })
   comments: Comment[];
 }
