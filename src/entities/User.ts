@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 import { ObjectType, Field } from "type-graphql";
 import { Post } from "./Post";
+import { Subscription } from "./Subscription";
 
 // Convert entity to object type so that we can use to declare graphql type in resolvers
 @ObjectType()
@@ -48,4 +49,10 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Updoot, (updoot) => updoot.user)
   updoots: Updoot[];
+
+  @OneToMany(() => Subscription, (subscription) => subscription.subscriber)
+  subscriptions: Subscription[];
+
+  @OneToMany(() => Subscription, (subscription) => subscription.subscribedTo)
+  subscribers: Subscription[];
 }

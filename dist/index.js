@@ -33,6 +33,7 @@ const user_1 = require("./resolvers/user");
 const createUpdootLoader_1 = require("./utils/createUpdootLoader");
 const createUserLoader_1 = require("./utils/createUserLoader");
 const Comment_1 = require("./entities/Comment");
+const Subscription_1 = require("./entities/Subscription");
 const PORT = parseInt(process.env.PORT) || 4000;
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     let conn = yield typeorm_1.createConnection({
@@ -40,7 +41,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         url: process.env.DATABASE_URL,
         logging: true,
         synchronize: true,
-        entities: [User_1.User, Post_1.Post, Updoot_1.Updoot, Comment_1.Comment],
+        entities: [User_1.User, Post_1.Post, Updoot_1.Updoot, Comment_1.Comment, Subscription_1.Subscription],
     });
     yield conn.runMigrations();
     const app = express_1.default();

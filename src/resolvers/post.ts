@@ -176,7 +176,7 @@ export class PostResolver {
       // await Post.delete({ id });
       // return true;
 
-      /**Cascading mathod */
+      /**Cascading method */
       await Post.delete({
         id,
         creatorId: req.session.userId,

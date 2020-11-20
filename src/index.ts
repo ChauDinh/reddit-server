@@ -19,6 +19,7 @@ import { UserResolver } from "./resolvers/user";
 import { createUpdootLoader } from "./utils/createUpdootLoader";
 import { createUserLoader } from "./utils/createUserLoader";
 import { Comment } from "./entities/Comment";
+import { Subscription } from "./entities/Subscription";
 
 const PORT = parseInt(process.env.PORT) || 4000;
 
@@ -36,7 +37,7 @@ const main = async () => {
     logging: true,
     synchronize: true,
     // migrations: [path.join(__dirname, "./migrations/*")],
-    entities: [User, Post, Updoot, Comment],
+    entities: [User, Post, Updoot, Comment, Subscription],
   });
 
   // await Post.delete({});
