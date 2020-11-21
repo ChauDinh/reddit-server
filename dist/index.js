@@ -34,6 +34,7 @@ const createUpdootLoader_1 = require("./utils/createUpdootLoader");
 const createUserLoader_1 = require("./utils/createUserLoader");
 const Comment_1 = require("./entities/Comment");
 const Subscription_1 = require("./entities/Subscription");
+const subscription_1 = require("./resolvers/subscription");
 const PORT = parseInt(process.env.PORT) || 4000;
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     let conn = yield typeorm_1.createConnection({
@@ -71,7 +72,13 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     }));
     const apolloServer = new apollo_server_express_1.ApolloServer({
         schema: yield type_graphql_1.buildSchema({
-            resolvers: [hello_1.HelloResolver, post_1.PostResolver, user_1.UserResolver, comment_1.CommentResolver],
+            resolvers: [
+                hello_1.HelloResolver,
+                post_1.PostResolver,
+                user_1.UserResolver,
+                comment_1.CommentResolver,
+                subscription_1.SubscriptionResolver,
+            ],
             validate: false,
         }),
         context: ({ req, res }) => ({

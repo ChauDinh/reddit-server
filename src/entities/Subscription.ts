@@ -1,5 +1,11 @@
 import { Field, ObjectType } from "type-graphql";
-import { BaseEntity, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import {
+  BaseEntity,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryColumn,
+} from "typeorm";
 import { User } from "./User";
 
 @ObjectType()
@@ -12,6 +18,10 @@ export class Subscription extends BaseEntity {
   @Field()
   @PrimaryColumn()
   subscribedId: number;
+
+  @Field()
+  @CreateDateColumn()
+  createdAt: Date;
 
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.subscriptions)

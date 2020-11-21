@@ -44,6 +44,9 @@ export class CommentResolver {
     @Arg("input") input: CommentInput,
     @Ctx() { req }: MyContext
   ) {
+    if (!req.session.userId) {
+      throw new Error("Not Authenticated!");
+    }
     return Comment.create({
       ...input,
       creatorId: req.session!.userId,

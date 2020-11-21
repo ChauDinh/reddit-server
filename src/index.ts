@@ -20,6 +20,7 @@ import { createUpdootLoader } from "./utils/createUpdootLoader";
 import { createUserLoader } from "./utils/createUserLoader";
 import { Comment } from "./entities/Comment";
 import { Subscription } from "./entities/Subscription";
+import { SubscriptionResolver } from "./resolvers/subscription";
 
 const PORT = parseInt(process.env.PORT) || 4000;
 
@@ -80,7 +81,13 @@ const main = async () => {
   const apolloServer = new ApolloServer({
     // graphql schema
     schema: await buildSchema({
-      resolvers: [HelloResolver, PostResolver, UserResolver, CommentResolver],
+      resolvers: [
+        HelloResolver,
+        PostResolver,
+        UserResolver,
+        CommentResolver,
+        SubscriptionResolver,
+      ],
       validate: false,
     }),
     // context - a special object that is accessible by all resolvers
