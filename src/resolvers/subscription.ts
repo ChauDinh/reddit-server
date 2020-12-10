@@ -1,7 +1,15 @@
 import { MyContext } from "./../types";
 import { isAuth } from "./../middlewares/isAuth";
 import { Subscription } from "./../entities/Subscription";
-import { Arg, Ctx, Int, Mutation, Resolver, UseMiddleware } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  Int,
+  Mutation,
+  Query,
+  Resolver,
+  UseMiddleware,
+} from "type-graphql";
 import { getConnection } from "typeorm";
 
 @Resolver(Subscription)
@@ -37,8 +45,8 @@ export class SubscriptionResolver {
       await getConnection().transaction(async (transaction) => {
         await transaction.query(
           `
-        delete from subscription
-        where "subscriberId" = $1 and "subscribedId" = $2
+          delete from subscription
+          where "subscriberId" = $1 and "subscribedId" = $2
         `,
           [userId, subscribedId]
         );
@@ -46,5 +54,31 @@ export class SubscriptionResolver {
       return true;
     }
     return false;
+  }
+
+  @Query(() => [Number], { nullable: true }) // return all users that someone subscribes
+  async subscribed(
+    @Arg("subscriberId") subscriberId: number
+  ): Promise<number[]> {
+    let results = await Subscription.find({
+      where: {
+        subscriberId,
+      },
+    });
+    console.log(results);
+    return results.map((result) => result.subscribedId);
+  }
+
+  @Query(() => [Number], { nullable: true }) // return all users that subscribe to someone
+  async subscriber(
+    @Arg("subscribedId") subscribedId: number
+  ): Promise<number[]> {
+    let results = await Subscription.find({
+      where: {
+        subscribedId,
+      },
+    });
+    console.log(results);
+    return results.map((result) => result.subscriberId);
   }
 }
