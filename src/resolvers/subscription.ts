@@ -58,7 +58,7 @@ export class SubscriptionResolver {
 
   @Query(() => [Number], { nullable: true }) // return all users that someone subscribes
   async subscribed(
-    @Arg("subscriberId") subscriberId: number
+    @Arg("subscriberId", () => Int) subscriberId: number
   ): Promise<number[]> {
     let results = await Subscription.find({
       where: {
@@ -71,7 +71,7 @@ export class SubscriptionResolver {
 
   @Query(() => [Number], { nullable: true }) // return all users that subscribe to someone
   async subscriber(
-    @Arg("subscribedId") subscribedId: number
+    @Arg("subscribedId", () => Int) subscribedId: number
   ): Promise<number[]> {
     let results = await Subscription.find({
       where: {
