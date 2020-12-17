@@ -122,6 +122,37 @@ export class PostResolver {
     return Post.findOne(id);
   }
 
+  @Query(() => PaginatedPosts, { nullable: true })
+  async postsByCreatorId(
+    @Arg("creatorId", () => Int) creatorId: number,
+    @Arg("limit", () => Int) limit: number,
+    @Arg("cursor", () => String, { nullable: true }) cursor: string | null
+  ): Promise<PaginatedPosts> {
+    const realLimit = Math.min(10, limit);
+    const replacement: any[] = [realLimit + 1];
+
+    if (cursor) {
+      replacement.push(new Date(parseInt(cursor)));
+    }
+
+    const postsByCreatorId = await getConnection().query(
+      `
+      select p.* 
+      from post p
+      where p."creatorId" = ${creatorId}
+      ${cursor ? `and p."createdAt" < $2` : ""}
+      order by p."createdAt" DESC
+      limit $1
+    `,
+      replacement
+    );
+
+    return {
+      posts: postsByCreatorId.slice(0, realLimit),
+      hasMore: postsByCreatorId.length === realLimit + 1,
+    };
+  }
+
   @Mutation(() => Post) // The `createPost` resolver is a mutation which allows us create new post
   @UseMiddleware(isAuth) // The isAuth middleware authenticates whether creator logged in or not
   async createPost(
