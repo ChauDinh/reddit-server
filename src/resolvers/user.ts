@@ -10,6 +10,7 @@ import {
   Query,
   Resolver,
   Root,
+  Int,
 } from "type-graphql";
 import { getConnection } from "typeorm";
 import { v4 } from "uuid";
@@ -79,6 +80,18 @@ export class UserResolver {
     }
     const user = await User.findOne({ id: req.session!.userId });
     return user;
+  }
+
+  // query a specific user with a given userId
+  @Query(() => User, { nullable: true })
+  async getUserById(@Arg("id", () => Int) id: number) {
+    const result = await User.findOne({
+      where: {
+        id,
+      },
+    }).catch((err) => console.error(err));
+
+    return result;
   }
 
   @Mutation(() => UserResponse)
