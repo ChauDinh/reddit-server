@@ -35,6 +35,9 @@ const Comment_1 = require("./entities/Comment");
 const Subscription_1 = require("./entities/Subscription");
 const subscription_1 = require("./resolvers/subscription");
 const comment_1 = require("./resolvers/comment");
+const PostCategory_1 = require("./entities/PostCategory");
+const Category_1 = require("./entities/Category");
+const category_1 = require("./resolvers/category");
 const PORT = parseInt(process.env.PORT) || 4000;
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     let conn = yield typeorm_1.createConnection({
@@ -42,7 +45,15 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         url: process.env.DATABASE_URL,
         logging: true,
         synchronize: true,
-        entities: [User_1.User, Post_1.Post, Updoot_1.Updoot, Comment_1.Comment, Subscription_1.Subscription],
+        entities: [
+            User_1.User,
+            Post_1.Post,
+            Updoot_1.Updoot,
+            Comment_1.Comment,
+            Subscription_1.Subscription,
+            Category_1.Category,
+            PostCategory_1.PostCategory,
+        ],
     });
     yield conn.runMigrations();
     const app = express_1.default();
@@ -78,6 +89,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 user_1.UserResolver,
                 comment_1.CommentResolver,
                 subscription_1.SubscriptionResolver,
+                category_1.CategoryResolver,
             ],
             validate: false,
         }),

@@ -23,6 +23,7 @@ import { SubscriptionResolver } from "./resolvers/subscription";
 import { CommentResolver } from "./resolvers/comment";
 import { PostCategory } from "./entities/PostCategory";
 import { Category } from "./entities/Category";
+import { CategoryResolver } from "./resolvers/category";
 
 const PORT = parseInt(process.env.PORT) || 4000;
 
@@ -97,6 +98,7 @@ const main = async () => {
         UserResolver,
         CommentResolver,
         SubscriptionResolver,
+        CategoryResolver,
       ],
       validate: false,
     }),

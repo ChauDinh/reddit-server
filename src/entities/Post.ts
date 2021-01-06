@@ -67,14 +67,14 @@ export class Post extends BaseEntity {
   comments: Comment[];
 
   @Field(() => Boolean)
-  @Column()
+  @Column({ default: true })
   isPublic: boolean;
 
   @Field(() => Number)
-  @Column()
+  @Column({ nullable: true })
   viewed: number;
 
   @Field(() => Number)
-  @Column()
+  @Column({ nullable: true })
   min: number; // min to read the post
 }

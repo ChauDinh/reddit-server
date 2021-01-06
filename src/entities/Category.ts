@@ -30,11 +30,11 @@ export class Category extends BaseEntity {
   title!: string;
 
   @Field(() => Number)
-  @Column()
+  @Column({ nullable: true })
   point: number; // equals sum of posts' point in this category
 
   @Field(() => Number)
-  @Column()
+  @Column({ nullable: true })
   viewed: number;
 
   @OneToMany(() => PostCategory, (postCategory) => postCategory.category)

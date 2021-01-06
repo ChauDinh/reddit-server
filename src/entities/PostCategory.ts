@@ -14,11 +14,11 @@ import { Entity } from "typeorm";
 export class PostCategory extends BaseEntity {
   @Field(() => Number)
   @PrimaryColumn()
-  categoryId: number;
+  categoryId!: number;
 
   @Field(() => Number)
   @PrimaryColumn()
-  postId: number;
+  postId!: number;
 
   @Field(() => Category)
   @ManyToOne(() => Category, (category) => category.postCategories)

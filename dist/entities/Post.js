@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Post = void 0;
+const PostCategory_1 = require("./PostCategory");
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
 const User_1 = require("./User");
@@ -66,6 +67,10 @@ __decorate([
     __metadata("design:type", Array)
 ], Post.prototype, "updoots", void 0);
 __decorate([
+    typeorm_1.OneToMany(() => PostCategory_1.PostCategory, (postCategory) => postCategory.post),
+    __metadata("design:type", Array)
+], Post.prototype, "postCategories", void 0);
+__decorate([
     type_graphql_1.Field(() => Comment_1.Comment),
     typeorm_1.OneToMany(() => Comment_1.Comment, (comment) => comment.commentPost, {
         onDelete: "CASCADE",
@@ -74,17 +79,17 @@ __decorate([
 ], Post.prototype, "comments", void 0);
 __decorate([
     type_graphql_1.Field(() => Boolean),
-    typeorm_1.Column(),
+    typeorm_1.Column({ default: true }),
     __metadata("design:type", Boolean)
 ], Post.prototype, "isPublic", void 0);
 __decorate([
     type_graphql_1.Field(() => Number),
-    typeorm_1.Column(),
+    typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
 ], Post.prototype, "viewed", void 0);
 __decorate([
     type_graphql_1.Field(() => Number),
-    typeorm_1.Column(),
+    typeorm_1.Column({ nullable: true }),
     __metadata("design:type", Number)
 ], Post.prototype, "min", void 0);
 Post = __decorate([

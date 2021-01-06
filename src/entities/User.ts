@@ -57,22 +57,22 @@ export class User extends BaseEntity {
   subscribers: Subscription[];
 
   @Field(() => String)
-  @Column()
+  @Column({ nullable: true })
   status: string;
 
   @Field(() => Boolean)
-  @Column()
+  @Column({ default: false })
   isPremium: boolean;
 
   @Field(() => Number)
-  @Column()
+  @Column({ nullable: true })
   viewed: number;
 
   @Field(() => String)
-  @Column()
+  @Column({ nullable: true })
   nation: string;
 
   @Field(() => String)
-  @Column()
+  @Column({ nullable: true })
   title: string; // job title
 }
