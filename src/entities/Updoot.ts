@@ -3,7 +3,7 @@
  *
  * many to many
  *
- * user <-> posts
+ * users <-> posts
  *
  * user -> join table <- posts
  * user -> updoot <- posts

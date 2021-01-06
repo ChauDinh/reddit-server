@@ -1,3 +1,4 @@
+import { PostCategory } from "./PostCategory";
 import { ObjectType, Field, Int } from "type-graphql";
 import {
   Entity,
@@ -56,9 +57,24 @@ export class Post extends BaseEntity {
   @OneToMany(() => Updoot, (updoot) => updoot.post)
   updoots: Updoot[];
 
+  @OneToMany(() => PostCategory, (postCategory) => postCategory.post)
+  postCategories: PostCategory[];
+
   @Field(() => Comment)
   @OneToMany(() => Comment, (comment) => comment.commentPost, {
     onDelete: "CASCADE",
   })
   comments: Comment[];
+
+  @Field(() => Boolean)
+  @Column()
+  isPublic: boolean;
+
+  @Field(() => Number)
+  @Column()
+  viewed: number;
+
+  @Field(() => Number)
+  @Column()
+  min: number; // min to read the post
 }

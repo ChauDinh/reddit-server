@@ -55,4 +55,24 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Subscription, (subscription) => subscription.subscribedTo)
   subscribers: Subscription[];
+
+  @Field(() => String)
+  @Column()
+  status: string;
+
+  @Field(() => Boolean)
+  @Column()
+  isPremium: boolean;
+
+  @Field(() => Number)
+  @Column()
+  viewed: number;
+
+  @Field(() => String)
+  @Column()
+  nation: string;
+
+  @Field(() => String)
+  @Column()
+  title: string; // job title
 }

@@ -72,6 +72,21 @@ __decorate([
     }),
     __metadata("design:type", Array)
 ], Post.prototype, "comments", void 0);
+__decorate([
+    type_graphql_1.Field(() => Boolean),
+    typeorm_1.Column(),
+    __metadata("design:type", Boolean)
+], Post.prototype, "isPublic", void 0);
+__decorate([
+    type_graphql_1.Field(() => Number),
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], Post.prototype, "viewed", void 0);
+__decorate([
+    type_graphql_1.Field(() => Number),
+    typeorm_1.Column(),
+    __metadata("design:type", Number)
+], Post.prototype, "min", void 0);
 Post = __decorate([
     type_graphql_1.ObjectType(),
     typeorm_1.Entity()

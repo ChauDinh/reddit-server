@@ -12,7 +12,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const comment_1 = require("./resolvers/comment");
 require("reflect-metadata");
 require("dotenv-safe/config");
 const apollo_server_express_1 = require("apollo-server-express");
@@ -35,6 +34,7 @@ const createUserLoader_1 = require("./utils/createUserLoader");
 const Comment_1 = require("./entities/Comment");
 const Subscription_1 = require("./entities/Subscription");
 const subscription_1 = require("./resolvers/subscription");
+const comment_1 = require("./resolvers/comment");
 const PORT = parseInt(process.env.PORT) || 4000;
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     let conn = yield typeorm_1.createConnection({

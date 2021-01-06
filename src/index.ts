@@ -1,4 +1,3 @@
-import { CommentResolver } from "./resolvers/comment";
 import "reflect-metadata";
 import "dotenv-safe/config";
 import { ApolloServer } from "apollo-server-express";
@@ -21,11 +20,14 @@ import { createUserLoader } from "./utils/createUserLoader";
 import { Comment } from "./entities/Comment";
 import { Subscription } from "./entities/Subscription";
 import { SubscriptionResolver } from "./resolvers/subscription";
+import { CommentResolver } from "./resolvers/comment";
+import { PostCategory } from "./entities/PostCategory";
+import { Category } from "./entities/Category";
 
 const PORT = parseInt(process.env.PORT) || 4000;
 
 /**
- * Connect to PostgreSQL database with mikro-orm
+ * Connect to PostgreSQL database with type-orm
  * Initialize express server
  * Initialize Apollo Server for sending data to client
  * Config mikro-orm
@@ -36,9 +38,17 @@ const main = async () => {
     type: "postgres",
     url: process.env.DATABASE_URL,
     logging: true,
-    synchronize: true,
+    synchronize: true, // typeORM will automatically create tables for you
     // migrations: [path.join(__dirname, "./migrations/*")],
-    entities: [User, Post, Updoot, Comment, Subscription],
+    entities: [
+      User,
+      Post,
+      Updoot,
+      Comment,
+      Subscription,
+      Category,
+      PostCategory,
+    ],
   });
 
   // await Post.delete({});

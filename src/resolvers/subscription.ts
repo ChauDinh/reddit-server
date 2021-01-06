@@ -65,7 +65,7 @@ export class SubscriptionResolver {
         subscriberId,
       },
     });
-    console.log(results);
+
     return results.map((result) => result.subscribedId);
   }
 
@@ -78,6 +78,7 @@ export class SubscriptionResolver {
         subscribedId,
       },
     });
+
     console.log(results);
     return results.map((result) => result.subscriberId);
   }
