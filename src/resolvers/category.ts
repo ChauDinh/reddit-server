@@ -33,6 +33,14 @@ export class CategoryResolver {
     @Ctx() { req }: MyContext
   ): Promise<Category | null> {
     if (!req.session.userId) throw new Error("Not Authenticated");
+
+    let isExist = Category.find({
+      where: { title: title },
+    });
+
+    // checking category exist or not by title
+    if (isExist) throw new Error("The category has already existed");
+
     return Category.create({
       title: title,
       creatorId: req.session.userId,
