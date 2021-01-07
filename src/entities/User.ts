@@ -1,3 +1,4 @@
+import { Category } from "./Category";
 import { Comment } from "./Comment";
 import { Updoot } from "./Updoot";
 import {
@@ -75,4 +76,7 @@ export class User extends BaseEntity {
   @Field(() => String)
   @Column({ nullable: true })
   title: string; // job title
+
+  @OneToMany(() => Category, (category) => category.creator)
+  categories: Category[];
 }

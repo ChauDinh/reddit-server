@@ -1,3 +1,4 @@
+import { User } from "./User";
 import { PostCategory } from "./PostCategory";
 import { Field, ObjectType } from "type-graphql";
 import {
@@ -5,6 +6,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -26,8 +28,12 @@ export class Category extends BaseEntity {
   updatedAt: Date;
 
   @Field(() => String)
-  @Column()
+  @Column({ unique: true, nullable: false })
   title!: string;
+
+  @Field(() => Number)
+  @Column()
+  creatorId!: number;
 
   @Field(() => Number)
   @Column({ nullable: true })
@@ -39,4 +45,8 @@ export class Category extends BaseEntity {
 
   @OneToMany(() => PostCategory, (postCategory) => postCategory.category)
   postCategories: PostCategory[];
+
+  @Field(() => User)
+  @ManyToOne(() => User, (user) => user.categories)
+  creator: User;
 }
