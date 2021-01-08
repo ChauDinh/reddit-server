@@ -23,7 +23,9 @@ import { SubscriptionResolver } from "./resolvers/subscription";
 import { CommentResolver } from "./resolvers/comment";
 import { PostCategory } from "./entities/PostCategory";
 import { Category } from "./entities/Category";
+import { DirectMessage } from "./entities/DirectMessage";
 import { CategoryResolver } from "./resolvers/category";
+import { DirectMessageResolver } from "./resolvers/directMessage";
 
 const PORT = parseInt(process.env.PORT) || 4000;
 
@@ -49,6 +51,7 @@ const main = async () => {
       Subscription,
       Category,
       PostCategory,
+      DirectMessage,
     ],
   });
 
@@ -99,6 +102,7 @@ const main = async () => {
         CommentResolver,
         SubscriptionResolver,
         CategoryResolver,
+        DirectMessageResolver,
       ],
       validate: false,
     }),

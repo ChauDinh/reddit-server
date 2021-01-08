@@ -37,7 +37,9 @@ const subscription_1 = require("./resolvers/subscription");
 const comment_1 = require("./resolvers/comment");
 const PostCategory_1 = require("./entities/PostCategory");
 const Category_1 = require("./entities/Category");
+const DirectMessage_1 = require("./entities/DirectMessage");
 const category_1 = require("./resolvers/category");
+const directMessage_1 = require("./resolvers/directMessage");
 const PORT = parseInt(process.env.PORT) || 4000;
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     let conn = yield typeorm_1.createConnection({
@@ -53,6 +55,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             Subscription_1.Subscription,
             Category_1.Category,
             PostCategory_1.PostCategory,
+            DirectMessage_1.DirectMessage,
         ],
     });
     yield conn.runMigrations();
@@ -90,6 +93,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 comment_1.CommentResolver,
                 subscription_1.SubscriptionResolver,
                 category_1.CategoryResolver,
+                directMessage_1.DirectMessageResolver,
             ],
             validate: false,
         }),

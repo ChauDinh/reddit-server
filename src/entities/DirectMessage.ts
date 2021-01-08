@@ -26,13 +26,13 @@ export class DirectMessage extends BaseEntity {
 
   @Field(() => String)
   @Column()
-  text: string;
+  text!: string;
 
   @Field(() => Number)
   @PrimaryColumn()
-  sendId: number;
+  senderId!: number;
 
   @Field(() => Number)
   @PrimaryColumn()
-  toId: number;
+  receiverId!: number;
 }
