@@ -119,7 +119,18 @@ export class PostResolver {
 
   @Query(() => Post, { nullable: true }) // The `post` resolver will return a post specified by ID and allow nullable result
   async post(@Arg("id", () => Int) id: number): Promise<Post | undefined> {
-    return Post.findOne(id);
+    const postResult = await Post.findOne(id);
+    if (!postResult) return undefined;
+
+    // if there is a post, increase the viewed
+    await getConnection()
+      .createQueryBuilder()
+      .update(Post)
+      .set({ viewed: () => "viewed + 1" })
+      .where("id = :id", { id: id })
+      .returning("*")
+      .execute();
+    return postResult;
   }
 
   @Query(() => PaginatedPosts, { nullable: true })
@@ -210,7 +221,7 @@ export class PostResolver {
       /**Cascading method */
       await Post.delete({
         id,
-        creatorId: req.session.userId,
+        creatorId: req.session.userId, // you can only delete post you created
       });
       return true;
     } catch (err) {

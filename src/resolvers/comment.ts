@@ -54,6 +54,25 @@ export class CommentResolver {
     }).save();
   }
 
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async deleteComment(
+    @Arg("commentId") commentId: number,
+    @Ctx() { req }: MyContext
+  ): Promise<boolean> {
+    if (!req.session.userId) throw new Error("Not Authenticated");
+
+    await Comment.delete({
+      id: commentId,
+      creatorId: req.session.userId, // you can only delete comment you created
+    }).catch((err) => {
+      console.error(err);
+      return false;
+    });
+
+    return true;
+  }
+
   @Query(() => CommentResults, { nullable: true })
   async comments(@Arg("postId") postId: number): Promise<CommentResults> {
     let results = await Comment.find({

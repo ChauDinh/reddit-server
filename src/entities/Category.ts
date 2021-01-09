@@ -36,7 +36,7 @@ export class Category extends BaseEntity {
   creatorId!: number;
 
   @Field(() => Number)
-  @Column({ nullable: true })
+  @Column({ default: 0 })
   point: number; // equals sum of posts' point in this category
 
   @Field(() => Number)

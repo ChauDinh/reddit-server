@@ -35,4 +35,8 @@ export class DirectMessage extends BaseEntity {
   @Field(() => Number)
   @PrimaryColumn()
   receiverId!: number;
+
+  @Field(() => Number)
+  @Column({ default: 0 })
+  viewed: number;
 }

@@ -1,7 +1,14 @@
-import { Arg, Ctx, FieldResolver, Root } from "type-graphql";
 import { MyContext } from "./../types";
 import { isAuth } from "./../middlewares/isAuth";
-import { Mutation, Resolver, UseMiddleware } from "type-graphql";
+import {
+  Mutation,
+  Resolver,
+  UseMiddleware,
+  Arg,
+  Ctx,
+  FieldResolver,
+  Root,
+} from "type-graphql";
 import { DirectMessage } from "./../entities/DirectMessage";
 import { User } from "./../entities/User";
 
@@ -39,5 +46,24 @@ export class DirectMessageResolver {
       senderId: req.session.userId,
       receiverId: receiverId,
     }).save();
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async deleteMessage(
+    @Arg("messageId") messageId: number,
+    @Ctx() { req }: MyContext
+  ): Promise<boolean> {
+    if (!req.session.userId) throw new Error("Not Authenticated");
+
+    await DirectMessage.delete({
+      id: messageId,
+      senderId: req.session.userId, // you can only delete message you created
+    }).catch((err) => {
+      console.error(err);
+      return false;
+    });
+
+    return true;
   }
 }

@@ -71,7 +71,7 @@ export class Post extends BaseEntity {
   isPublic: boolean;
 
   @Field(() => Number)
-  @Column({ nullable: true })
+  @Column({ default: 0 })
   viewed: number;
 
   @Field(() => Number)

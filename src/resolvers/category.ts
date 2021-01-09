@@ -46,4 +46,23 @@ export class CategoryResolver {
       creatorId: req.session.userId,
     }).save();
   }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async deleteCategory(
+    @Arg("categoryId") categoryId: number,
+    @Ctx() { req }: MyContext
+  ): Promise<boolean> {
+    if (!req.session.userId) throw new Error("Not Authenticated");
+
+    await Category.delete({
+      id: categoryId,
+      creatorId: req.session.userId, // you can only delete category you created
+    }).catch((err) => {
+      console.error(err);
+      return false;
+    });
+
+    return true;
+  }
 }

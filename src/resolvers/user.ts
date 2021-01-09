@@ -91,6 +91,19 @@ export class UserResolver {
       },
     }).catch((err) => console.error(err));
 
+    if (!result) return null;
+
+    // if there is user, increase the viewed
+    await getConnection()
+      .createQueryBuilder()
+      .update(User)
+      .set({
+        viewed: () => "viewed + 1",
+      })
+      .where("id = :id", { id })
+      .returning("*")
+      .execute();
+
     return result;
   }
 

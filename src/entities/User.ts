@@ -66,7 +66,7 @@ export class User extends BaseEntity {
   isPremium: boolean;
 
   @Field(() => Number)
-  @Column({ nullable: true })
+  @Column({ default: 0 })
   viewed: number;
 
   @Field(() => String)
