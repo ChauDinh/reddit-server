@@ -1,5 +1,6 @@
 import {
   Arg,
+  ArgsType,
   Ctx,
   Field,
   FieldResolver,
@@ -19,15 +20,6 @@ import { User } from "./../entities/User";
 import { isAuth } from "./../middlewares/isAuth";
 import { MyContext } from "./../types";
 
-@InputType()
-class PostInput {
-  @Field()
-  title: string;
-
-  @Field()
-  text: string;
-}
-
 @ObjectType()
 class PaginatedPosts {
   @Field(() => [Post])
@@ -36,15 +28,88 @@ class PaginatedPosts {
   hasMore: boolean;
 }
 
+@ObjectType()
+@InputType()
+class Child {
+  @Field()
+  text: string;
+
+  @Field()
+  bold?: boolean;
+
+  @Field()
+  italic?: boolean;
+
+  @Field()
+  underline?: boolean;
+
+  @Field(() => [Child2])
+  children?: Child2[];
+
+  @Field()
+  type: string;
+
+  @Field()
+  code?: boolean;
+}
+
+@ObjectType()
+@InputType()
+class Child2 {
+  @Field()
+  text: string;
+
+  @Field()
+  italic?: boolean;
+
+  @Field()
+  underline?: boolean;
+
+  @Field()
+  bold?: boolean;
+
+  @Field()
+  code?: boolean;
+}
+
+@ObjectType()
+@InputType()
+class TypeText {
+  @Field(() => [Child])
+  children?: Child[];
+
+  @Field()
+  type: string;
+
+  @Field()
+  url?: string;
+}
+
+@ArgsType()
+@InputType()
+class TypeTextInput {
+  @Field(() => [TypeText])
+  text: TypeText[];
+}
+
+@InputType()
+class PostInput {
+  @Field()
+  title: string;
+
+  @Field(() => [TypeText])
+  text: TypeText[];
+}
+
 @Resolver(Post)
 export class PostResolver {
   // The textSnippet resolver for slicing the text of the post, @FieldResolver doesn't effect to database
-  @FieldResolver(() => String)
-  textSnippet(@Root() root: Post) {
-    return root.text.length > 100
-      ? root.text.slice(0, 100) + " ..."
-      : root.text;
-  }
+  // @FieldResolver(() => String)
+  // textSnippet(@Root() root: Post) {
+  //   return root.text.length > 100
+  //     ? root.text.slice(0, 100) + " ..."
+  //     : root.text;
+  // }
 
   @FieldResolver(() => User)
   async creator(@Root() post: Post, @Ctx() { userLoader }: MyContext) {
@@ -184,9 +249,10 @@ export class PostResolver {
   async updatePost(
     @Arg("id", () => Int) id: number,
     @Arg("title", () => String, { nullable: true }) title: string,
-    @Arg("text", () => String, { nullable: true }) text: string,
+    @Arg("text") { text }: TypeTextInput,
     @Ctx() { req }: MyContext
   ): Promise<Post | null> {
+    console.log(typeof text);
     const result = await getConnection()
       .createQueryBuilder()
       .update(Post)
