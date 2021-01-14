@@ -1,7 +1,7 @@
-import { User } from "../entities/User";
-import { MyContext } from "./../types";
-import { isAuth } from "./../middlewares/isAuth";
-import { Comment } from "./../entities/Comment";
+import { User } from "../../entities/User";
+import { MyContext } from "../../types";
+import { isAuth } from "../../middlewares/isAuth";
+import { Comment } from "../../entities/Comment";
 import {
   InputType,
   Field,

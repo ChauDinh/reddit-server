@@ -1,5 +1,5 @@
-import { MyContext } from "./../types";
-import { isAuth } from "./../middlewares/isAuth";
+import { MyContext } from "../../types";
+import { isAuth } from "../../middlewares/isAuth";
 import {
   Mutation,
   Resolver,
@@ -9,8 +9,8 @@ import {
   FieldResolver,
   Root,
 } from "type-graphql";
-import { DirectMessage } from "./../entities/DirectMessage";
-import { User } from "./../entities/User";
+import { DirectMessage } from "../../entities/DirectMessage";
+import { User } from "../../entities/User";
 
 @Resolver(DirectMessage)
 export class DirectMessageResolver {

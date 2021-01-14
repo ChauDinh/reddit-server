@@ -13,19 +13,22 @@ import { Post } from "./entities/Post";
 import { Updoot } from "./entities/Updoot";
 import { User } from "./entities/User";
 import { HelloResolver } from "./resolvers/hello";
-import { PostResolver } from "./resolvers/post";
-import { UserResolver } from "./resolvers/user";
+import { PostResolver } from "./resolvers/PostResolver";
+import { UserResolver } from "./resolvers/UserResolver";
 import { createUpdootLoader } from "./utils/createUpdootLoader";
 import { createUserLoader } from "./utils/createUserLoader";
 import { Comment } from "./entities/Comment";
 import { Subscription } from "./entities/Subscription";
-import { SubscriptionResolver } from "./resolvers/subscription";
-import { CommentResolver } from "./resolvers/comment";
+import { SubscriptionResolver } from "./resolvers/SubscriptionResolver";
+import { CommentResolver } from "./resolvers/CommentResolver";
 import { PostCategory } from "./entities/PostCategory";
 import { Category } from "./entities/Category";
 import { DirectMessage } from "./entities/DirectMessage";
-import { CategoryResolver } from "./resolvers/category";
-import { DirectMessageResolver } from "./resolvers/directMessage";
+import { CategoryResolver } from "./resolvers/CategoryResolver";
+import { DirectMessageResolver } from "./resolvers/DirectMessageResolver";
+import { Sub } from "./entities/Sub";
+import { Member } from "./entities/Member";
+import { Story } from "./entities/Story";
 
 const PORT = parseInt(process.env.PORT) || 4000;
 
@@ -52,6 +55,9 @@ const main = async () => {
       Category,
       PostCategory,
       DirectMessage,
+      Story,
+      Sub,
+      Member,
     ],
   });
 

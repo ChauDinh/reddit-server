@@ -1,6 +1,6 @@
-import { MyContext } from "./../types";
-import { isAuth } from "./../middlewares/isAuth";
-import { Category } from "./../entities/Category";
+import { MyContext } from "../../types";
+import { isAuth } from "../../middlewares/isAuth";
+import { Category } from "../../entities/Category";
 import {
   Arg,
   Ctx,
@@ -12,7 +12,7 @@ import {
   Root,
 } from "type-graphql";
 
-import { User } from "../entities/User";
+import { User } from "../../entities/User";
 
 @Resolver(Category)
 export class CategoryResolver {

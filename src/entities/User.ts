@@ -1,3 +1,4 @@
+import { Story } from "./Story";
 import { Category } from "./Category";
 import { Comment } from "./Comment";
 import { Updoot } from "./Updoot";
@@ -13,6 +14,8 @@ import {
 import { ObjectType, Field } from "type-graphql";
 import { Post } from "./Post";
 import { Subscription } from "./Subscription";
+import { Sub } from "./Sub";
+import { Member } from "./Member";
 
 // Convert entity to object type so that we can use to declare graphql type in resolvers
 @ObjectType()
@@ -51,11 +54,17 @@ export class User extends BaseEntity {
   @OneToMany(() => Updoot, (updoot) => updoot.user)
   updoots: Updoot[];
 
+  @OneToMany(() => Member, (member) => member.user)
+  members: Member[];
+
   @OneToMany(() => Subscription, (subscription) => subscription.subscriber)
   subscriptions: Subscription[];
 
   @OneToMany(() => Subscription, (subscription) => subscription.subscribedTo)
   subscribers: Subscription[];
+
+  @OneToMany(() => Story, (story) => story.creator)
+  stories: Story[];
 
   @Field(() => String)
   @Column({ nullable: true })
@@ -79,4 +88,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Category, (category) => category.creator)
   categories: Category[];
+
+  @OneToMany(() => Sub, (sub) => sub.creator)
+  subs: Sub[];
 }

@@ -14,11 +14,11 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { getConnection } from "typeorm";
-import { Post } from "./../entities/Post";
-import { Updoot } from "./../entities/Updoot";
-import { User } from "./../entities/User";
-import { isAuth } from "./../middlewares/isAuth";
-import { MyContext } from "./../types";
+import { Post } from "../../entities/Post";
+import { Updoot } from "../../entities/Updoot";
+import { User } from "../../entities/User";
+import { isAuth } from "../../middlewares/isAuth";
+import { MyContext } from "../../types";
 
 @ObjectType()
 class PaginatedPosts {
@@ -34,22 +34,22 @@ class Child {
   @Field()
   text: string;
 
-  @Field()
+  @Field({ nullable: true, defaultValue: false })
   bold?: boolean;
 
-  @Field()
+  @Field({ nullable: true, defaultValue: false })
   italic?: boolean;
 
-  @Field()
+  @Field({ nullable: true, defaultValue: false })
   underline?: boolean;
 
-  @Field(() => [Child2])
+  @Field(() => [Child2], { nullable: true })
   children?: Child2[];
 
   @Field()
   type: string;
 
-  @Field()
+  @Field({ nullable: true, defaultValue: false })
   code?: boolean;
 }
 
@@ -59,29 +59,29 @@ class Child2 {
   @Field()
   text: string;
 
-  @Field()
+  @Field({ nullable: true, defaultValue: false })
   italic?: boolean;
 
-  @Field()
+  @Field({ nullable: true, defaultValue: false })
   underline?: boolean;
 
-  @Field()
+  @Field({ nullable: true, defaultValue: false })
   bold?: boolean;
 
-  @Field()
+  @Field({ nullable: true, defaultValue: false })
   code?: boolean;
 }
 
 @ObjectType()
 @InputType()
 class TypeText {
-  @Field(() => [Child])
+  @Field(() => [Child], { nullable: true })
   children?: Child[];
 
   @Field()
   type: string;
 
-  @Field()
+  @Field(() => String, { nullable: true, defaultValue: "" })
   url?: string;
 }
 

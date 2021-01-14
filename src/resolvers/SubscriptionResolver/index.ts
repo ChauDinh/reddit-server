@@ -1,6 +1,6 @@
-import { MyContext } from "./../types";
-import { isAuth } from "./../middlewares/isAuth";
-import { Subscription } from "./../entities/Subscription";
+import { MyContext } from "../../types";
+import { isAuth } from "../../middlewares/isAuth";
+import { Subscription } from "../../entities/Subscription";
 import {
   Arg,
   Ctx,

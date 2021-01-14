@@ -91,7 +91,7 @@ export class Post extends BaseEntity {
 
   @Field(() => [TextType])
   @Column({ type: "jsonb" })
-  text!: TextType[];
+  text: TextType[];
 
   @Field()
   @Column({ type: "int", default: 0 })

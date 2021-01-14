@@ -14,10 +14,10 @@ import {
 } from "type-graphql";
 import { getConnection } from "typeorm";
 import { v4 } from "uuid";
-import { sendEmail } from "../utils/sendEmail";
-import { COOKIE_NAME, FORGOT_PASSWORD_PREFIX } from "./../constants";
-import { User } from "./../entities/User";
-import { MyContext } from "./../types";
+import { sendEmail } from "../../utils/sendEmail";
+import { COOKIE_NAME, FORGOT_PASSWORD_PREFIX } from "../../constants";
+import { User } from "../../entities/User";
+import { MyContext } from "../../types";
 
 // We can define an input type class for arguments instead of using multiple
 // @Arg() from type-graphql
