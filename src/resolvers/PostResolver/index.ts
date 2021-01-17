@@ -1,6 +1,5 @@
 import {
   Arg,
-  ArgsType,
   Ctx,
   Field,
   FieldResolver,
@@ -27,78 +26,13 @@ class PaginatedPosts {
   @Field()
   hasMore: boolean;
 }
-
-@ObjectType()
-@InputType()
-class Child {
-  @Field()
-  text: string;
-
-  @Field({ nullable: true, defaultValue: false })
-  bold?: boolean;
-
-  @Field({ nullable: true, defaultValue: false })
-  italic?: boolean;
-
-  @Field({ nullable: true, defaultValue: false })
-  underline?: boolean;
-
-  @Field(() => [Child2], { nullable: true })
-  children?: Child2[];
-
-  @Field()
-  type: string;
-
-  @Field({ nullable: true, defaultValue: false })
-  code?: boolean;
-}
-
-@ObjectType()
-@InputType()
-class Child2 {
-  @Field()
-  text: string;
-
-  @Field({ nullable: true, defaultValue: false })
-  italic?: boolean;
-
-  @Field({ nullable: true, defaultValue: false })
-  underline?: boolean;
-
-  @Field({ nullable: true, defaultValue: false })
-  bold?: boolean;
-
-  @Field({ nullable: true, defaultValue: false })
-  code?: boolean;
-}
-
-@ObjectType()
-@InputType()
-class TypeText {
-  @Field(() => [Child], { nullable: true })
-  children?: Child[];
-
-  @Field()
-  type: string;
-
-  @Field(() => String, { nullable: true, defaultValue: "" })
-  url?: string;
-}
-
-@ArgsType()
-@InputType()
-class TypeTextInput {
-  @Field(() => [TypeText])
-  text: TypeText[];
-}
-
 @InputType()
 class PostInput {
-  @Field()
+  @Field(() => String)
   title: string;
 
-  @Field(() => [TypeText])
-  text: TypeText[];
+  @Field(() => String)
+  text: string;
 }
 
 @Resolver(Post)
@@ -249,10 +183,9 @@ export class PostResolver {
   async updatePost(
     @Arg("id", () => Int) id: number,
     @Arg("title", () => String, { nullable: true }) title: string,
-    @Arg("text") { text }: TypeTextInput,
+    @Arg("text") text: string,
     @Ctx() { req }: MyContext
   ): Promise<Post | null> {
-    console.log(typeof text);
     const result = await getConnection()
       .createQueryBuilder()
       .update(Post)

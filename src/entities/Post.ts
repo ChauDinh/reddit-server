@@ -14,60 +14,6 @@ import { User } from "./User";
 import { Comment } from "./Comment";
 import { Updoot } from "./Updoot";
 
-@ObjectType()
-class Node {
-  @Field()
-  text: string;
-
-  @Field()
-  bold?: boolean;
-
-  @Field()
-  italic?: boolean;
-
-  @Field()
-  underline?: boolean;
-
-  @Field(() => [SubNode])
-  children?: SubNode[];
-
-  @Field()
-  type: string;
-
-  @Field()
-  code?: boolean;
-}
-
-@ObjectType()
-class SubNode {
-  @Field()
-  text: string;
-
-  @Field()
-  italic?: boolean;
-
-  @Field()
-  underline?: boolean;
-
-  @Field()
-  bold?: boolean;
-
-  @Field()
-  code?: boolean;
-}
-
-@ObjectType()
-class TextType {
-  @Field(() => [Node])
-  children?: Node[];
-
-  @Field()
-  type: string;
-
-  @Field()
-  url?: string;
-}
-
 // Convert entity to object type so that we can use to declare graphql type in resolvers
 @ObjectType()
 @Entity()
@@ -89,9 +35,9 @@ export class Post extends BaseEntity {
   @Column({ type: "text", nullable: false })
   title!: string;
 
-  @Field(() => [TextType])
-  @Column({ type: "jsonb" })
-  text: TextType[];
+  @Field(() => String)
+  @Column({ type: "text" })
+  text: string;
 
   @Field()
   @Column({ type: "int", default: 0 })
