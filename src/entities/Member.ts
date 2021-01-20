@@ -1,6 +1,11 @@
 import { User } from "./User";
 import { Sub } from "./Sub";
-import { BaseEntity, PrimaryColumn, ManyToOne } from "typeorm";
+import {
+  BaseEntity,
+  PrimaryColumn,
+  ManyToOne,
+  CreateDateColumn,
+} from "typeorm";
 import { ObjectType, Field } from "type-graphql";
 import { Entity } from "typeorm";
 /**
@@ -32,4 +37,8 @@ export class Member extends BaseEntity {
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.members)
   user: User;
+
+  @Field()
+  @CreateDateColumn()
+  createdAt: Date;
 }

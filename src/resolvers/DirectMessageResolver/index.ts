@@ -3,6 +3,7 @@ import { isAuth } from "../../middlewares/isAuth";
 import {
   Mutation,
   Resolver,
+  Query,
   UseMiddleware,
   Arg,
   Ctx,
@@ -65,5 +66,24 @@ export class DirectMessageResolver {
     });
 
     return true;
+  }
+
+  @Query(() => [DirectMessage], { nullable: true })
+  @UseMiddleware(isAuth)
+  async sentMessages(@Ctx() { req }: MyContext): Promise<DirectMessage[]> {
+    const results = await DirectMessage.find({
+      where: { senderId: req.session.userId },
+    });
+    console.log("[Direct Message]: ", results);
+    return results;
+  }
+
+  @Query(() => [DirectMessage], { nullable: true })
+  @UseMiddleware(isAuth)
+  async receivedMessages(@Ctx() { req }: MyContext): Promise<DirectMessage[]> {
+    const results = await DirectMessage.find({
+      where: { receiverId: req.session.userId },
+    });
+    return results;
   }
 }

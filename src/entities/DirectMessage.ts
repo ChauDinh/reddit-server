@@ -4,10 +4,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { User } from "./User";
 
 @ObjectType()
 @Entity()
@@ -39,4 +41,12 @@ export class DirectMessage extends BaseEntity {
   @Field(() => Number)
   @Column({ default: 0 })
   viewed: number;
+
+  @Field(() => User)
+  @ManyToOne(() => User, (user) => user.senders)
+  sender: User;
+
+  @Field(() => User)
+  @ManyToOne(() => User, (user) => user.receivers)
+  receiver: User;
 }

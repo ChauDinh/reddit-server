@@ -126,6 +126,9 @@ const main = async () => {
   apolloServer.applyMiddleware({
     app,
     cors: false,
+    bodyParserConfig: {
+      limit: "2mb",
+    },
   });
 
   app.listen(PORT, () =>

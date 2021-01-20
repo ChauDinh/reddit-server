@@ -16,6 +16,7 @@ import { Post } from "./Post";
 import { Subscription } from "./Subscription";
 import { Sub } from "./Sub";
 import { Member } from "./Member";
+import { DirectMessage } from "./DirectMessage";
 
 // Convert entity to object type so that we can use to declare graphql type in resolvers
 @ObjectType()
@@ -91,4 +92,10 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Sub, (sub) => sub.creator)
   subs: Sub[];
+
+  @OneToMany(() => DirectMessage, (dm) => dm.sender)
+  senders: DirectMessage[];
+
+  @OneToMany(() => DirectMessage, (dm) => dm.receiver)
+  receivers: DirectMessage[];
 }
