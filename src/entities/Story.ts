@@ -33,13 +33,13 @@ export class Story extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Field(() => String)
-  @Column()
-  text: string;
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
+  text?: string;
 
-  @Field(() => String)
-  @Column()
-  url: string;
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
+  url?: string;
 
   @Field(() => Number)
   @Column()

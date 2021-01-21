@@ -1,5 +1,5 @@
 import { User } from "./User";
-import { Sub } from "./Sub";
+import { Publication } from "./Publication";
 import {
   BaseEntity,
   PrimaryColumn,
@@ -28,11 +28,11 @@ export class Member extends BaseEntity {
 
   @Field()
   @PrimaryColumn()
-  subId: number;
+  publicationId: number;
 
-  @Field(() => Sub)
-  @ManyToOne(() => Sub, (sub) => sub.members, { onDelete: "CASCADE" })
-  sub: Sub;
+  @Field(() => Publication)
+  @ManyToOne(() => Publication, (pub) => pub.members, { onDelete: "CASCADE" })
+  pub: Publication;
 
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.members)

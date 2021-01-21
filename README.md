@@ -104,3 +104,13 @@ Now we can refresh the home page and our `creator` query is cached successfully.
 
 ![with
 dataloader](https://res.cloudinary.com/dnlthcx1a/image/upload/v1604478837/Screen_Shot_2020-11-04_at_15.33.29_nn7ea2.png)
+
+### Notification system
+
+1. User does something that triggers a notification (like your post, comment on
+   your post, subscribe request, etc)
+2. Screen to view all notifications
+3. Set notifications as read
+4. queue
+5. push notifications
+6. toggle notification on/off

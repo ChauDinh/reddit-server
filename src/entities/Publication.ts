@@ -11,6 +11,7 @@ import {
 import { Entity } from "typeorm";
 import { Field, ObjectType } from "type-graphql";
 import { User } from "./User";
+import { Post } from "./Post";
 
 /**
  * A Sub contains posts of members joined that sub, instead of all members
@@ -22,7 +23,7 @@ import { User } from "./User";
 
 @ObjectType()
 @Entity()
-export class Sub extends BaseEntity {
+export class Publication extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
   id!: number;
@@ -47,6 +48,10 @@ export class Sub extends BaseEntity {
   @ManyToOne(() => User, (user) => user.subs)
   creator: User;
 
-  @OneToMany(() => Member, (member) => member.sub)
+  @OneToMany(() => Member, (member) => member.pub)
   members: Member[];
+
+  @Field(() => [Post])
+  @OneToMany(() => Post, (post) => post.publication)
+  posts: Post[];
 }

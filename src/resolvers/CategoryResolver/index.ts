@@ -23,7 +23,14 @@ export class CategoryResolver {
 
   @Query(() => [Category], { nullable: true })
   async categories(): Promise<Category[] | null> {
-    return Category.find();
+    return await Category.find();
+  }
+
+  @Query(() => [Category], { nullable: true })
+  async categoriesByCreatorId(@Arg("id") id: number): Promise<Category[]> {
+    return await Category.find({
+      where: { creatorId: id },
+    });
   }
 
   @Mutation(() => Category)
@@ -34,12 +41,13 @@ export class CategoryResolver {
   ): Promise<Category | null> {
     if (!req.session.userId) throw new Error("Not Authenticated");
 
-    let isExist = Category.find({
+    let isExist = await Category.find({
       where: { title: title },
     });
 
     // checking category exist or not by title
-    if (isExist) throw new Error("The category has already existed");
+    if (isExist.length !== 0)
+      throw new Error("The category has already existed");
 
     return Category.create({
       title: title,

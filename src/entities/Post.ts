@@ -1,3 +1,4 @@
+import { Publication } from "./Publication";
 import { PostCategory } from "./PostCategory";
 import { ObjectType, Field, Int } from "type-graphql";
 import {
@@ -47,6 +48,10 @@ export class Post extends BaseEntity {
   @Column()
   creatorId: number;
 
+  @Field(() => String, { nullable: true, defaultValue: null })
+  @Column({ nullable: true, default: null })
+  publicationId: number;
+
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.posts)
   creator: User;
@@ -57,6 +62,7 @@ export class Post extends BaseEntity {
   @OneToMany(() => Updoot, (updoot) => updoot.post)
   updoots: Updoot[];
 
+  @Field(() => [PostCategory], { nullable: true })
   @OneToMany(() => PostCategory, (postCategory) => postCategory.post)
   postCategories: PostCategory[];
 
@@ -77,4 +83,7 @@ export class Post extends BaseEntity {
   @Field(() => Number)
   @Column({ nullable: true })
   min: number; // min to read the post
+
+  @ManyToOne(() => Publication, (pub) => pub.posts)
+  publication: Publication;
 }

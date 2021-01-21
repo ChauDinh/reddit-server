@@ -26,9 +26,12 @@ import { Category } from "./entities/Category";
 import { DirectMessage } from "./entities/DirectMessage";
 import { CategoryResolver } from "./resolvers/CategoryResolver";
 import { DirectMessageResolver } from "./resolvers/DirectMessageResolver";
-import { Sub } from "./entities/Sub";
+import { PostCategoryResolver } from "./resolvers/PostCategoryResolver/index";
+import { StoryResolver } from "./resolvers/StoryResolver/index";
+import { Publication } from "./entities/Publication";
 import { Member } from "./entities/Member";
 import { Story } from "./entities/Story";
+import { PublicationResolver } from "./resolvers/PublicationResolver";
 
 const PORT = parseInt(process.env.PORT) || 4000;
 
@@ -56,7 +59,7 @@ const main = async () => {
       PostCategory,
       DirectMessage,
       Story,
-      Sub,
+      Publication,
       Member,
     ],
   });
@@ -109,6 +112,9 @@ const main = async () => {
         SubscriptionResolver,
         CategoryResolver,
         DirectMessageResolver,
+        PostCategoryResolver,
+        StoryResolver,
+        PublicationResolver,
       ],
       validate: false,
     }),

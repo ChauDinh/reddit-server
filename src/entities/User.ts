@@ -14,7 +14,7 @@ import {
 import { ObjectType, Field } from "type-graphql";
 import { Post } from "./Post";
 import { Subscription } from "./Subscription";
-import { Sub } from "./Sub";
+import { Publication } from "./Publication";
 import { Member } from "./Member";
 import { DirectMessage } from "./DirectMessage";
 
@@ -90,8 +90,8 @@ export class User extends BaseEntity {
   @OneToMany(() => Category, (category) => category.creator)
   categories: Category[];
 
-  @OneToMany(() => Sub, (sub) => sub.creator)
-  subs: Sub[];
+  @OneToMany(() => Publication, (pub) => pub.creator)
+  subs: Publication[];
 
   @OneToMany(() => DirectMessage, (dm) => dm.sender)
   senders: DirectMessage[];
