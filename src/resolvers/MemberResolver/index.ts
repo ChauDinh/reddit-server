@@ -9,7 +9,7 @@ export class MemberResolver {
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async createMember(
-    @Arg("publicationId") publicationId: string,
+    @Arg("publicationId") publicationId: number,
     @Ctx() { req }: MyContext
   ) {
     if (!req.session.userId) throw new Error("Not authenticated!");
@@ -22,6 +22,7 @@ export class MemberResolver {
     });
 
     if (isMember.length !== 0) {
+      // member has subscribed the publication
       await getConnection().transaction(async (transaction) => {
         await transaction.query(
           `
@@ -33,6 +34,7 @@ export class MemberResolver {
       });
       return true;
     } else if (isMember.length === 0) {
+      // member has not subscribed the publication
       await getConnection().transaction(async (transaction) => {
         await transaction.query(
           `

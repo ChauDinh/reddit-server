@@ -5,6 +5,7 @@ import {
   PrimaryColumn,
   ManyToOne,
   CreateDateColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { ObjectType, Field } from "type-graphql";
 import { Entity } from "typeorm";
@@ -26,13 +27,15 @@ export class Member extends BaseEntity {
   @PrimaryColumn()
   userId: number;
 
-  @Field()
+  @Field(() => Number)
   @PrimaryColumn()
   publicationId: number;
 
   @Field(() => Publication)
-  @ManyToOne(() => Publication, (pub) => pub.members, { onDelete: "CASCADE" })
-  pub: Publication;
+  @ManyToOne(() => Publication, (publication) => publication.members, {
+    onDelete: "CASCADE",
+  })
+  publication: Publication;
 
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.members)
@@ -41,4 +44,8 @@ export class Member extends BaseEntity {
   @Field()
   @CreateDateColumn()
   createdAt: Date;
+
+  @Field()
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

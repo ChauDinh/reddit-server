@@ -48,10 +48,12 @@ export class Publication extends BaseEntity {
   @ManyToOne(() => User, (user) => user.subs)
   creator: User;
 
-  @OneToMany(() => Member, (member) => member.pub)
+  @OneToMany(() => Member, (member) => member.publication, {
+    onDelete: "CASCADE",
+  })
   members: Member[];
 
   @Field(() => [Post])
-  @OneToMany(() => Post, (post) => post.publication)
+  @OneToMany(() => Post, (post) => post.publication, { onDelete: "CASCADE" })
   posts: Post[];
 }

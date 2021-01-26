@@ -32,6 +32,7 @@ import { Publication } from "./entities/Publication";
 import { Member } from "./entities/Member";
 import { Story } from "./entities/Story";
 import { PublicationResolver } from "./resolvers/PublicationResolver";
+import { MemberResolver } from "./resolvers/MemberResolver/index";
 
 const PORT = parseInt(process.env.PORT) || 4000;
 
@@ -115,6 +116,7 @@ const main = async () => {
         PostCategoryResolver,
         StoryResolver,
         PublicationResolver,
+        MemberResolver,
       ],
       validate: false,
     }),

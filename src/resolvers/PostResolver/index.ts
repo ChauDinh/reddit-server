@@ -33,6 +33,9 @@ class PostInput {
 
   @Field(() => String)
   text: string;
+
+  @Field(() => Number, { nullable: true })
+  publicationId?: number;
 }
 
 @Resolver(Post)
@@ -83,10 +86,11 @@ export class PostResolver {
       `
       select p.*
       from post p 
+      where p."publicationId" IS NULL
       ${
         cursor
           ? `
-        where p."createdAt" < $2
+        and p."createdAt" < $2
       `
           : ""
       }
@@ -160,6 +164,74 @@ export class PostResolver {
     return {
       posts: postsByCreatorId.slice(0, realLimit),
       hasMore: postsByCreatorId.length === realLimit + 1,
+    };
+  }
+
+  /**
+   * TODO: return all posts in publications user following
+   */
+  @Query(() => Boolean, { nullable: true })
+  @UseMiddleware(isAuth)
+  async postsInFollowingPublications(
+    @Ctx() { req }: MyContext,
+    @Arg("limit", () => Int) limit: number,
+    @Arg("cursor", () => String, { nullable: true }) cursor: string | null
+  ): Promise<boolean> {
+    if (!req.session.userId) throw new Error("Not authenticated!");
+
+    const realLimit = Math.min(10, limit);
+    const replacement: any[] = [realLimit + 1];
+
+    if (cursor) {
+      replacement.push(new Date(parseInt(cursor)));
+    }
+
+    const postsInFollowingPublications = await getConnection().query(`
+      select max(u.username) as username, max(p.id) as publication_id, p.title as publication_title, array_agg(p2.id) as post_id from member
+      inner join publication p on member."publicationId" = p.id
+      inner join public.user u on member."userId" = u.id
+      inner join public.post p2 on p.id = p2."publicationId"
+      where member."userId" = ${req.session.userId}
+      group by p.title
+    `);
+
+    console.log("[POSTS DATA]: ", postsInFollowingPublications);
+
+    return true;
+  }
+
+  @Query(() => PaginatedPosts, { nullable: true })
+  @UseMiddleware(isAuth)
+  async postsByPublicationId(
+    @Arg("publicationId", () => Int) publicationId: number,
+    @Arg("limit", () => Int) limit: number,
+    @Arg("cursor", () => String, { nullable: true }) cursor: string | null
+  ): Promise<PaginatedPosts> {
+    /**
+     * TODO: query multiple posts from array of publicationIds
+     */
+
+    const realLimit = Math.min(10, limit);
+    const replacement: any[] = [realLimit + 1];
+
+    if (cursor) {
+      replacement.push(new Date(parseInt(cursor)));
+    }
+
+    const postsByPublicationId = await getConnection().query(
+      `
+      select p.* 
+      from post p
+      where p."publicationId" = ${publicationId} 
+      ${cursor ? `and p."createdAt" < $2` : ""}
+      limit $1
+    `,
+      replacement
+    );
+
+    return {
+      posts: postsByPublicationId.slice(0, realLimit),
+      hasMore: postsByPublicationId.length === realLimit + 1,
     };
   }
 
