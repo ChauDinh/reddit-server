@@ -170,24 +170,25 @@ export class PostResolver {
   /**
    * TODO: return all posts in publications user following
    */
-  @Query(() => Boolean, { nullable: true })
+  @Query(() => PaginatedPosts, { nullable: true })
   @UseMiddleware(isAuth)
   async postsInFollowingPublications(
     @Ctx() { req }: MyContext,
     @Arg("limit", () => Int) limit: number,
     @Arg("cursor", () => String, { nullable: true }) cursor: string | null
-  ): Promise<boolean> {
+  ): Promise<PaginatedPosts> {
     if (!req.session.userId) throw new Error("Not authenticated!");
 
     const realLimit = Math.min(10, limit);
     const replacement: any[] = [realLimit + 1];
+    const postIds: number[] = [];
 
     if (cursor) {
       replacement.push(new Date(parseInt(cursor)));
     }
 
     const postsInFollowingPublications = await getConnection().query(`
-      select max(u.username) as username, max(p.id) as publication_id, p.title as publication_title, array_agg(p2.id) as post_id from member
+      select p.title as publication_title, array_agg(p2.id) as posts from member
       inner join publication p on member."publicationId" = p.id
       inner join public.user u on member."userId" = u.id
       inner join public.post p2 on p.id = p2."publicationId"
@@ -197,7 +198,23 @@ export class PostResolver {
 
     console.log("[POSTS DATA]: ", postsInFollowingPublications);
 
-    return true;
+    postsInFollowingPublications.map((response: any) =>
+      response.posts.map((ids: any) => postIds.push(ids))
+    );
+
+    console.log("[POST IDS]: ", postIds);
+
+    const postsResult = await getConnection().query(`
+      select * from public.post p
+      where p.id in (${postIds})
+    `);
+
+    console.log("[POST RESULTS]: ", postsResult);
+
+    return {
+      posts: postsResult.slice(0, realLimit),
+      hasMore: postsResult.length === realLimit + 1,
+    };
   }
 
   @Query(() => PaginatedPosts, { nullable: true })
