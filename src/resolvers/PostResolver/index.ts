@@ -15,6 +15,7 @@ import {
 import { getConnection } from "typeorm";
 import { Post } from "../../entities/Post";
 import { Updoot } from "../../entities/Updoot";
+import { Publication } from "./../../entities/Publication";
 import { User } from "../../entities/User";
 import { isAuth } from "../../middlewares/isAuth";
 import { MyContext } from "../../types";
@@ -67,6 +68,14 @@ export class PostResolver {
     });
 
     return updoot ? updoot.value : null;
+  }
+
+  @FieldResolver(() => Publication)
+  async publication(
+    @Root() post: Post,
+    @Ctx() { publicationLoader }: MyContext
+  ) {
+    return await publicationLoader.load(post.publicationId);
   }
 
   @Query(() => PaginatedPosts) // The `posts` resolver will return an array of posts.

@@ -1,3 +1,5 @@
+import { createPublicationLoader } from "./utils/createPublicationLoader";
+import { createPostLoader } from "./utils/createPostLoader";
 import { createUpdootLoader } from "./utils/createUpdootLoader";
 import { Request, Response } from "express";
 import { Redis } from "ioredis";
@@ -9,4 +11,6 @@ export type MyContext = {
   redis: Redis;
   userLoader: ReturnType<typeof createUserLoader>;
   updootLoader: ReturnType<typeof createUpdootLoader>;
+  postLoader: ReturnType<typeof createPostLoader>;
+  publicationLoader: ReturnType<typeof createPublicationLoader>;
 };

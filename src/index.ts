@@ -18,6 +18,7 @@ import { UserResolver } from "./resolvers/UserResolver";
 import { createUpdootLoader } from "./utils/createUpdootLoader";
 import { createUserLoader } from "./utils/createUserLoader";
 import { createPostLoader } from "./utils/createPostLoader";
+import { createPublicationLoader } from "./utils/createPublicationLoader";
 import { Comment } from "./entities/Comment";
 import { Subscription } from "./entities/Subscription";
 import { SubscriptionResolver } from "./resolvers/SubscriptionResolver";
@@ -130,6 +131,7 @@ const main = async () => {
       userLoader: createUserLoader(),
       updootLoader: createUpdootLoader(),
       postLoader: createPostLoader(),
+      publicationLoader: createPublicationLoader(),
     }),
   });
 
