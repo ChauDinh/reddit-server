@@ -1,3 +1,5 @@
+import { UserProfile } from "./UserProfile";
+import { UserCategory } from "./UserCategory";
 import { Story } from "./Story";
 import { Category } from "./Category";
 import { Comment } from "./Comment";
@@ -10,6 +12,7 @@ import {
   UpdateDateColumn,
   BaseEntity,
   OneToMany,
+  OneToOne,
 } from "typeorm";
 import { ObjectType, Field } from "type-graphql";
 import { Post } from "./Post";
@@ -67,26 +70,6 @@ export class User extends BaseEntity {
   @OneToMany(() => Story, (story) => story.creator)
   stories: Story[];
 
-  @Field(() => String)
-  @Column({ nullable: true })
-  status: string;
-
-  @Field(() => Boolean)
-  @Column({ default: false })
-  isPremium: boolean;
-
-  @Field(() => Number)
-  @Column({ default: 0 })
-  viewed: number;
-
-  @Field(() => String)
-  @Column({ nullable: true })
-  nation: string;
-
-  @Field(() => String)
-  @Column({ nullable: true })
-  title: string; // job title
-
   @OneToMany(() => Category, (category) => category.creator)
   categories: Category[];
 
@@ -98,4 +81,10 @@ export class User extends BaseEntity {
 
   @OneToMany(() => DirectMessage, (dm) => dm.receiver)
   receivers: DirectMessage[];
+
+  @OneToMany(() => UserCategory, (userCategory) => userCategory.user)
+  userCategories: UserCategory[];
+
+  @OneToOne(() => UserProfile, (profile) => profile.user)
+  profile: UserProfile;
 }

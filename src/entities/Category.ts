@@ -1,3 +1,4 @@
+import { UserCategory } from "./UserCategory";
 import { User } from "./User";
 import { PostCategory } from "./PostCategory";
 import { Field, ObjectType } from "type-graphql";
@@ -49,4 +50,7 @@ export class Category extends BaseEntity {
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.categories)
   creator: User;
+
+  @OneToMany(() => UserCategory, (userCategory) => userCategory.category)
+  userCategories: UserCategory[];
 }

@@ -16,6 +16,6 @@ export class PostCategoryResolver {
     return await PostCategory.create({
       postId,
       categoryId,
-    });
+    }).save();
   }
 }

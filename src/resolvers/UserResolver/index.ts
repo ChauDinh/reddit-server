@@ -17,6 +17,7 @@ import { v4 } from "uuid";
 import { sendEmail } from "../../utils/sendEmail";
 import { COOKIE_NAME, FORGOT_PASSWORD_PREFIX } from "../../constants";
 import { User } from "../../entities/User";
+import { UserProfile } from "./../../entities/UserProfile";
 import { MyContext } from "../../types";
 
 // We can define an input type class for arguments instead of using multiple
@@ -96,7 +97,7 @@ export class UserResolver {
     // if there is user, increase the viewed
     await getConnection()
       .createQueryBuilder()
-      .update(User)
+      .update(UserProfile)
       .set({
         viewed: () => "viewed + 1",
       })
@@ -186,6 +187,16 @@ export class UserResolver {
         };
       }
     }
+
+    // add new user profile to database
+    await getConnection()
+      .createQueryBuilder()
+      .insert()
+      .into(UserProfile)
+      .values({ userId: user.id })
+      .returning("*")
+      .execute();
+
     return { user };
   }
 

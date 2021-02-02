@@ -1,8 +1,7 @@
 import { Post } from "./Post";
 import { Category } from "./Category";
-import { BaseEntity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Entity, BaseEntity, ManyToOne, PrimaryColumn } from "typeorm";
 import { ObjectType, Field } from "type-graphql";
-import { Entity } from "typeorm";
 /**
  * The join table with two one-to-many relationships:
  * Post -> PostCategory,

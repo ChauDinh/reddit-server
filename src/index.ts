@@ -35,6 +35,10 @@ import { Member } from "./entities/Member";
 import { Story } from "./entities/Story";
 import { PublicationResolver } from "./resolvers/PublicationResolver";
 import { MemberResolver } from "./resolvers/MemberResolver/index";
+import { UserCategory } from "./entities/UserCategory";
+import { UserCategoryResolver } from "./resolvers/UserCategoryResolver";
+import { UserProfileResolver } from "./resolvers/UserProfileResolver";
+import { UserProfile } from "./entities/UserProfile";
 
 const PORT = parseInt(process.env.PORT) || 4000;
 
@@ -64,6 +68,8 @@ const main = async () => {
       Story,
       Publication,
       Member,
+      UserCategory,
+      UserProfile,
     ],
   });
 
@@ -119,6 +125,8 @@ const main = async () => {
         StoryResolver,
         PublicationResolver,
         MemberResolver,
+        UserCategoryResolver,
+        UserProfileResolver,
       ],
       validate: false,
     }),
