@@ -44,6 +44,19 @@ export class UserProfileResolver {
     return profile;
   }
 
+  @Query(() => UserProfile, { nullable: true })
+  async profileById(
+    @Ctx() { req }: MyContext,
+    @Arg("userId") userId: number
+  ): Promise<UserProfile | undefined> {
+    if (!req.session.userId) throw new Error("Not authenticated!");
+    return await UserProfile.findOne({
+      where: {
+        userId: userId,
+      },
+    });
+  }
+
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async updateProfile(
