@@ -1,5 +1,5 @@
+import { GraphQLUpload } from "graphql-upload";
 import { getConnection } from "typeorm";
-import { MyContext } from "./../../types";
 import { UserProfile } from "./../../entities/UserProfile";
 import {
   Arg,
@@ -12,6 +12,8 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { isAuth } from "./../../middlewares/isAuth";
+import { AvatarUpload, MyContext } from "./../../types";
+import { createWriteStream } from "fs";
 
 @InputType()
 class UserProfileInput {
@@ -80,5 +82,23 @@ export class UserProfileResolver {
       console.error(err);
       return false;
     }
+  }
+
+  @Mutation(() => Boolean)
+  async uploadAvatar(
+    @Arg("picture", () => GraphQLUpload)
+    { filename, createReadStream }: AvatarUpload
+  ): Promise<boolean> {
+    return new Promise(async (resolve, reject) =>
+      createReadStream()
+        .pipe(
+          createWriteStream(__dirname + `/../../../images/avatars/${filename}`)
+        )
+        .on("finish", () => resolve(true))
+        .on("error", (err) => {
+          console.error(err);
+          reject(false);
+        })
+    );
   }
 }

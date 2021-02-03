@@ -1,3 +1,4 @@
+import { Stream } from "stream";
 import { createPublicationLoader } from "./utils/createPublicationLoader";
 import { createPostLoader } from "./utils/createPostLoader";
 import { createUpdootLoader } from "./utils/createUpdootLoader";
@@ -14,3 +15,10 @@ export type MyContext = {
   postLoader: ReturnType<typeof createPostLoader>;
   publicationLoader: ReturnType<typeof createPublicationLoader>;
 };
+
+export interface AvatarUpload {
+  filename: string;
+  mimetype: string;
+  encoding: string;
+  createReadStream: () => Stream;
+}

@@ -40,7 +40,7 @@ import { UserCategoryResolver } from "./resolvers/UserCategoryResolver";
 import { UserProfileResolver } from "./resolvers/UserProfileResolver";
 import { UserProfile } from "./entities/UserProfile";
 
-const PORT = parseInt(process.env.PORT) || 4000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT) : 4000;
 
 /**
  * Connect to PostgreSQL database with type-orm
