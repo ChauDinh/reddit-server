@@ -1,3 +1,6 @@
+import { UserProfile } from "./../../entities/UserProfile";
+import { User } from "./../../entities/User";
+import faker from "faker";
 import { graphqlCall } from "./../../__test__/graphqlCall";
 import { Connection } from "typeorm";
 import { testConfig } from "../../__test__/testConfig";
@@ -35,27 +38,104 @@ const helloQuery = `
   }
 `;
 
-describe("Register resolver", () => {
+const meQuery = `
+  query Me {
+    me {
+      username
+      email
+    }
+  }
+`;
+
+describe("User resolvers", () => {
   it("hello query", async () => {
-    console.log(
-      await graphqlCall({
-        source: helloQuery,
-      })
-    );
+    const hello = await graphqlCall({
+      source: helloQuery,
+    });
+
+    // TODO: checking hello query
+    expect(hello).toMatchObject({
+      data: {
+        hello: "Hello, World from Hello Graphql Resolver",
+      },
+    });
   });
 
-  it("create user", async () => {
-    console.log(
-      await graphqlCall({
-        source: registerMutation,
-        variableValues: {
-          options: {
-            username: "bob",
-            email: "bob@bob.com",
-            password: "bob@bob.com",
+  it("register mutation", async () => {
+    const mockUser = {
+      username: `${faker.name.firstName()} ${faker.name.lastName()}`,
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+    };
+
+    const response = await graphqlCall({
+      source: registerMutation,
+      variableValues: {
+        options: mockUser,
+      },
+    });
+
+    // TODO: checking for creat user success or not
+    expect(response).toMatchObject({
+      data: {
+        register: {
+          user: {
+            id: 1,
+            username: mockUser.username,
           },
         },
-      })
-    );
+      },
+    });
+
+    const dbUser = await User.findOne({
+      where: {
+        id: 1,
+      },
+    });
+    const dbUserProfile = await UserProfile.findOne({
+      where: {
+        userId: 1,
+      },
+    });
+
+    // TODO: checking for writing user to database success or not
+    expect(dbUser).toBeDefined();
+    expect(dbUser!.username).toBe(mockUser.username);
+    expect(dbUserProfile).toBeDefined();
+  });
+
+  it("me query", async () => {
+    const user = await User.create({
+      username: faker.name.firstName(),
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+    }).save();
+
+    const response = await graphqlCall({
+      source: meQuery,
+      userId: user.id,
+    });
+
+    // TODO: checking me query with { req } context
+    expect(response).toMatchObject({
+      data: {
+        me: {
+          username: user.username,
+          email: user.email,
+        },
+      },
+    });
+  });
+
+  it("me query without req.session.userId in context", async () => {
+    const response = await graphqlCall({
+      source: meQuery,
+    });
+
+    expect(response).toMatchObject({
+      data: {
+        me: null,
+      },
+    });
   });
 });
