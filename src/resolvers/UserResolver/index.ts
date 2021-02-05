@@ -23,7 +23,7 @@ import { MyContext } from "../../types";
 // We can define an input type class for arguments instead of using multiple
 // @Arg() from type-graphql
 @InputType()
-class RegisterInput {
+export class RegisterInput {
   @Field()
   username: string;
 
@@ -35,7 +35,7 @@ class RegisterInput {
 }
 
 @InputType()
-class LoginInput {
+export class LoginInput {
   @Field()
   usernameOrEmail: string;
 
@@ -44,7 +44,7 @@ class LoginInput {
 }
 
 @ObjectType()
-class FieldError {
+export class FieldError {
   @Field()
   field: string; // show what field error occurs like: username/email, password
 
