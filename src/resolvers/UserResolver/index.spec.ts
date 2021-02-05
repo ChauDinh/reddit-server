@@ -32,6 +32,18 @@ const registerMutation = `
   }
 `;
 
+const loginMutation = `
+  mutation Login($options: LoginInput!) {
+    login(options: $options) {
+      user {
+        username
+        id
+        email
+      }
+    }
+  }
+`;
+
 const helloQuery = `
   query Hello {
     hello
@@ -61,7 +73,7 @@ describe("User resolvers", () => {
     });
   });
 
-  it("register mutation", async () => {
+  it("register and login mutations", async () => {
     const mockUser = {
       username: `${faker.name.firstName()} ${faker.name.lastName()}`,
       email: faker.internet.email(),
@@ -102,6 +114,30 @@ describe("User resolvers", () => {
     expect(dbUser).toBeDefined();
     expect(dbUser!.username).toBe(mockUser.username);
     expect(dbUserProfile).toBeDefined();
+
+    const loginResponse = await graphqlCall({
+      source: loginMutation,
+      variableValues: {
+        options: {
+          usernameOrEmail: mockUser.email,
+          password: mockUser.password,
+        },
+      },
+      userId: 1,
+    });
+
+    // TODO: checking for login registered user
+    expect(loginResponse).toMatchObject({
+      data: {
+        login: {
+          user: {
+            username: mockUser.username,
+            id: 1,
+            email: mockUser.email,
+          },
+        },
+      },
+    });
   });
 
   it("me query", async () => {

@@ -16,7 +16,7 @@ import { AvatarUpload, MyContext } from "./../../types";
 import { createWriteStream } from "fs";
 
 @InputType()
-class UserProfileInput {
+export class UserProfileInput {
   @Field({ nullable: true })
   status?: string;
 
