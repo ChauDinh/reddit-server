@@ -32,11 +32,13 @@ const updateProfileMutation = `
 `;
 
 describe("User Profile resolvers", () => {
-  it("me profile query", async () => {
+  it("me and update profile resolvers", async () => {
     const response = await graphqlCall({
       source: meProfileQuery,
       userId: 1,
     });
+
+    console.log("[Response Me Profile]: ", response);
 
     expect(response).toMatchObject({
       data: {
@@ -46,24 +48,22 @@ describe("User Profile resolvers", () => {
         },
       },
     });
-  });
 
-  it("update profile", async () => {
-    const mockProfile = {
+    const mockerProfile = {
       status: faker.lorem.text(10),
       age: faker.random.number(99),
-      nation: "vietnam",
+      nation: "chinese",
     };
 
-    const response = await graphqlCall({
+    const updateProfileResponse = await graphqlCall({
       source: updateProfileMutation,
       variableValues: {
-        options: mockProfile,
+        options: mockerProfile,
       },
       userId: 1,
     });
 
-    expect(response).toMatchObject({
+    expect(updateProfileResponse).toMatchObject({
       data: {
         updateProfile: true,
       },
@@ -75,8 +75,10 @@ describe("User Profile resolvers", () => {
       },
     });
 
-    expect(dbProfileAfterUpdate!.age).toEqual(mockProfile.age);
-    expect(dbProfileAfterUpdate!.nation).toEqual(mockProfile.nation);
-    expect(dbProfileAfterUpdate!.status).toEqual(mockProfile.status);
+    console.log("[User Profile Updated]: ", dbProfileAfterUpdate);
+
+    expect(dbProfileAfterUpdate!.age).toEqual(mockerProfile.age);
+    expect(dbProfileAfterUpdate?.nation).toEqual(mockerProfile.nation);
+    expect(dbProfileAfterUpdate?.status).toEqual(mockerProfile.status);
   });
 });
