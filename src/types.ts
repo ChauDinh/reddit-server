@@ -5,6 +5,7 @@ import { createUpdootLoader } from "./utils/createUpdootLoader";
 import { Request, Response } from "express";
 import { Redis } from "ioredis";
 import { createUserLoader } from "./utils/createUserLoader";
+import { createCategoryLoader } from "./utils/createCategoryLoader";
 
 export type MyContext = {
   req: Request & { session: Express.Session };
@@ -14,6 +15,7 @@ export type MyContext = {
   updootLoader: ReturnType<typeof createUpdootLoader>;
   postLoader: ReturnType<typeof createPostLoader>;
   publicationLoader: ReturnType<typeof createPublicationLoader>;
+  categoryLoader: ReturnType<typeof createCategoryLoader>;
 };
 
 export interface AvatarUpload {

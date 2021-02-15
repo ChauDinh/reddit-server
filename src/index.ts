@@ -19,6 +19,7 @@ import { createUpdootLoader } from "./utils/createUpdootLoader";
 import { createUserLoader } from "./utils/createUserLoader";
 import { createPostLoader } from "./utils/createPostLoader";
 import { createPublicationLoader } from "./utils/createPublicationLoader";
+import { createCategoryLoader } from "./utils/createCategoryLoader";
 import { Comment } from "./entities/Comment";
 import { Subscription } from "./entities/Subscription";
 import { SubscriptionResolver } from "./resolvers/SubscriptionResolver";
@@ -28,7 +29,7 @@ import { Category } from "./entities/Category";
 import { DirectMessage } from "./entities/DirectMessage";
 import { CategoryResolver } from "./resolvers/CategoryResolver";
 import { DirectMessageResolver } from "./resolvers/DirectMessageResolver";
-import { PostCategoryResolver } from "./resolvers/PostCategoryResolver/index";
+import { PostCategoryResolver } from "./resolvers/PostCategoryResolver/";
 import { StoryResolver } from "./resolvers/StoryResolver/index";
 import { Publication } from "./entities/Publication";
 import { Member } from "./entities/Member";
@@ -140,6 +141,7 @@ const main = async () => {
       updootLoader: createUpdootLoader(),
       postLoader: createPostLoader(),
       publicationLoader: createPublicationLoader(),
+      categoryLoader: createCategoryLoader(),
     }),
   });
 
