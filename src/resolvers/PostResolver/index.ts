@@ -270,10 +270,16 @@ export class PostResolver {
     if (!req.session?.userId) {
       throw new Error("Not Authenticated!");
     }
-    return Post.create({
+
+    const postCreated = await Post.create({
       ...input,
       creatorId: req.session!.userId,
     }).save();
+
+    // TODO: create post_category by postId
+    console.log(postCreated.id);
+
+    return postCreated;
   }
 
   @Mutation(() => Post, { nullable: true }) // The `updatePost` resolver is a mutation which allows us update current post
