@@ -27,10 +27,28 @@ class PaginatedPosts {
   @Field()
   hasMore: boolean;
 }
+
+@ObjectType()
+export class CreatePostFieldError {
+  @Field()
+  field: string;
+
+  @Field()
+  message: string;
+}
+@ObjectType()
+class CreatePostResponse {
+  @Field(() => [CreatePostFieldError], { nullable: true })
+  errors?: CreatePostFieldError[];
+
+  @Field(() => Post, { nullable: true })
+  post?: Post;
+}
+
 @InputType()
 class PostInput {
   @Field(() => String)
-  title: string;
+  title!: string;
 
   @Field(() => String)
   text: string;
@@ -261,14 +279,36 @@ export class PostResolver {
     };
   }
 
-  @Mutation(() => Post) // The `createPost` resolver is a mutation which allows us create new post
+  @Mutation(() => CreatePostResponse) // The `createPost` resolver is a mutation which allows us create new post
   @UseMiddleware(isAuth) // The isAuth middleware authenticates whether creator logged in or not
   async createPost(
     @Arg("input") input: PostInput,
     @Ctx() { req }: MyContext
-  ): Promise<Post> {
+  ): Promise<CreatePostResponse> {
     if (!req.session?.userId) {
       throw new Error("Not Authenticated!");
+    }
+
+    if (input.title.length <= 1) {
+      return {
+        errors: [
+          {
+            field: "title",
+            message: "The title is too short",
+          },
+        ],
+      };
+    }
+
+    if (!input.text) {
+      return {
+        errors: [
+          {
+            field: "text",
+            message: "The text can't be empty",
+          },
+        ],
+      };
     }
 
     const postCreated = await Post.create({
@@ -279,7 +319,7 @@ export class PostResolver {
     // TODO: create post_category by postId
     console.log(postCreated.id);
 
-    return postCreated;
+    return { post: postCreated };
   }
 
   @Mutation(() => Post, { nullable: true }) // The `updatePost` resolver is a mutation which allows us update current post

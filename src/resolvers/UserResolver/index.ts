@@ -44,7 +44,7 @@ export class LoginInput {
 }
 
 @ObjectType()
-export class FieldError {
+export class RegisterFieldError {
   @Field()
   field: string; // show what field error occurs like: username/email, password
 
@@ -54,8 +54,8 @@ export class FieldError {
 
 @ObjectType()
 class UserResponse {
-  @Field(() => [FieldError], { nullable: true })
-  errors?: FieldError[];
+  @Field(() => [RegisterFieldError], { nullable: true })
+  errors?: RegisterFieldError[];
 
   @Field(() => User, { nullable: true })
   user?: User;
