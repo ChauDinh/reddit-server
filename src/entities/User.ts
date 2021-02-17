@@ -31,11 +31,11 @@ export class User extends BaseEntity {
   id!: number;
 
   @Field(() => String)
-  @CreateDateColumn()
+  @CreateDateColumn({ type: "timestamptz" })
   createdAt: Date;
 
   @Field(() => String)
-  @UpdateDateColumn() // this hook will automatically update for us
+  @UpdateDateColumn({ type: "timestamptz" }) // this hook will automatically update for us
   updatedAt: Date;
 
   @Field()

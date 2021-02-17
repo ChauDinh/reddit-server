@@ -55,11 +55,11 @@ export class UserProfile extends BaseEntity {
   avatarUrl: string;
 
   @Field()
-  @CreateDateColumn()
+  @CreateDateColumn({ type: "timestamptz" })
   created_at: Date;
 
   @Field()
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: "timestamptz" })
   updated_at: Date;
 
   @Field(() => User)

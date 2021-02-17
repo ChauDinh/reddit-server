@@ -25,11 +25,11 @@ export class Post extends BaseEntity {
   id!: number;
 
   @Field(() => String)
-  @CreateDateColumn()
+  @CreateDateColumn({ type: "timestamptz" })
   createdAt: Date;
 
   @Field(() => String)
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: "timestamptz" })
   updatedAt: Date;
 
   @Field()
@@ -63,7 +63,9 @@ export class Post extends BaseEntity {
   updoots: Updoot[];
 
   @Field(() => [PostCategory], { nullable: true })
-  @OneToMany(() => PostCategory, (postCategory) => postCategory.post)
+  @OneToMany(() => PostCategory, (postCategory) => postCategory.post, {
+    onDelete: "CASCADE",
+  })
   postCategories: PostCategory[];
 
   @Field(() => Comment)

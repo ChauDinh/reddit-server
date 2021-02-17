@@ -20,7 +20,7 @@ export class Subscription extends BaseEntity {
   subscribedId: number;
 
   @Field()
-  @CreateDateColumn()
+  @CreateDateColumn({ type: "timestamptz" })
   createdAt: Date;
 
   @Field(() => User)
