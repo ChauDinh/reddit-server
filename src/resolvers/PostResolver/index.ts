@@ -300,7 +300,7 @@ export class PostResolver {
       };
     }
 
-    if (!input.text) {
+    if (input.text.length <= 1) {
       return {
         errors: [
           {
@@ -322,14 +322,35 @@ export class PostResolver {
     return { post: postCreated };
   }
 
-  @Mutation(() => Post, { nullable: true }) // The `updatePost` resolver is a mutation which allows us update current post
+  @Mutation(() => CreatePostResponse) // The `updatePost` resolver is a mutation which allows us update current post
   @UseMiddleware(isAuth)
   async updatePost(
     @Arg("id", () => Int) id: number,
     @Arg("title", () => String, { nullable: true }) title: string,
     @Arg("text") text: string,
     @Ctx() { req }: MyContext
-  ): Promise<Post | null> {
+  ): Promise<CreatePostResponse> {
+    if (title.length <= 1) {
+      return {
+        errors: [
+          {
+            field: "title",
+            message: "The title is too short",
+          },
+        ],
+      };
+    }
+
+    if (text.length <= 1) {
+      return {
+        errors: [
+          {
+            field: "text",
+            message: "The text can't be empty",
+          },
+        ],
+      };
+    }
     const result = await getConnection()
       .createQueryBuilder()
       .update(Post)
@@ -340,7 +361,9 @@ export class PostResolver {
       })
       .returning("*")
       .execute();
-    return result.raw[0];
+    return {
+      post: result.raw[0],
+    };
   }
 
   @Mutation(() => Boolean) // The `deletePost` resolver is a mutation which allows us delete specific post (by ID)
