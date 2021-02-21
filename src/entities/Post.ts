@@ -1,5 +1,3 @@
-import { Publication } from "./Publication";
-import { PostCategory } from "./PostCategory";
 import { ObjectType, Field, Int } from "type-graphql";
 import {
   Entity,
@@ -13,6 +11,8 @@ import {
 } from "typeorm";
 import { User } from "./User";
 import { Comment } from "./Comment";
+import { Publication } from "./Publication";
+import { PostCategory } from "./PostCategory";
 import { Updoot } from "./Updoot";
 
 // Convert entity to object type so that we can use to declare graphql type in resolvers

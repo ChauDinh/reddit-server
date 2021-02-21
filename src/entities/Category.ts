@@ -40,7 +40,7 @@ export class Category extends BaseEntity {
   @Column({ default: 0 })
   point: number; // equals sum of posts' point in this category
 
-  @Field(() => Number)
+  @Field(() => Number, { nullable: true })
   @Column({ nullable: true })
   viewed: number;
 

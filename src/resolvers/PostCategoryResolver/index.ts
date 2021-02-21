@@ -15,7 +15,7 @@ import { Category } from "../../entities/Category";
 
 @Resolver(PostCategory)
 export class PostCategoryResolver {
-  @FieldResolver(() => [Category])
+  @FieldResolver(() => Category)
   async categories(
     @Root() postCategory: PostCategory,
     @Ctx() { categoryLoader }: MyContext
