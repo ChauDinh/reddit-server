@@ -114,6 +114,7 @@ export class UserResolver {
   ): Promise<UserResponse> {
     // validate register username input (check the length)
     if (options.username.length <= 2) {
+      await argon2.hash("just-to-waste-some-times-ahihi");
       return {
         errors: [
           {
@@ -125,6 +126,7 @@ export class UserResolver {
     }
     // validate register email input (check the length)
     if (options.email.length <= 2) {
+      await argon2.hash("just-to-waste-some-times-ahihi");
       return {
         errors: [
           {
@@ -136,6 +138,7 @@ export class UserResolver {
     }
     // validate register password input (check the length)
     if (options.password.length <= 2) {
+      await argon2.hash("just-to-waste-some-times-ahihi");
       return {
         errors: [
           {
@@ -221,6 +224,10 @@ export class UserResolver {
 
       // handle errors in case cannot find user by username or email
       if (!user) {
+        await argon2.verify(
+          "just-to-waste-some-times-ahihi",
+          "something-new-difference!"
+        );
         return {
           errors: [
             {
