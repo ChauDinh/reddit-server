@@ -44,6 +44,10 @@ export class Publication extends BaseEntity {
   @Column()
   creatorId: number;
 
+  @Field(() => Boolean, { defaultValue: false })
+  @Column({ nullable: false, default: false })
+  isPrivate: boolean;
+
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.subs)
   creator: User;

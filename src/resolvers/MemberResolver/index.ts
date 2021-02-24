@@ -1,11 +1,44 @@
+import {
+  Arg,
+  Ctx,
+  FieldResolver,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+  UseMiddleware,
+} from "type-graphql";
 import { MyContext } from "./../../types";
 import { isAuth } from "./../../middlewares/isAuth";
-import { Arg, Ctx, Mutation, Resolver, UseMiddleware } from "type-graphql";
 import { Member } from "./../../entities/Member";
 import { getConnection } from "typeorm";
+import { User } from "../../entities/User";
 
 @Resolver(Member)
 export class MemberResolver {
+  @FieldResolver(() => User)
+  async user(
+    @Root() member: Member,
+    @Ctx() { userLoader }: MyContext
+  ): Promise<User> {
+    return await userLoader.load(member.userId);
+  }
+
+  @Query(() => [Member])
+  @UseMiddleware(isAuth)
+  async members(
+    @Arg("publicationId") publicationId: number,
+    @Ctx() { req }: MyContext
+  ): Promise<Member[]> {
+    if (!req.session.userId) throw new Error("Not authenticated!");
+
+    return await Member.find({
+      where: {
+        publicationId,
+      },
+    });
+  }
+
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async createMember(
