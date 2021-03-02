@@ -114,3 +114,14 @@ dataloader](https://res.cloudinary.com/dnlthcx1a/image/upload/v1604478837/Screen
 4. queue
 5. push notifications
 6. toggle notification on/off
+
+### Stack for scaling to the moon
+
+- React (hooks)
+- TypeScript (version 4.0)
+- Elixir
+- PostgreSQL
+- Node.js
+- RabbitMQ
+
+**Why?** 
