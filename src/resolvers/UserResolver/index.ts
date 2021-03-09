@@ -225,8 +225,8 @@ export class UserResolver {
       // handle errors in case cannot find user by username or email
       if (!user) {
         await argon2.verify(
-          "just-to-waste-some-times-ahihi",
-          "something-new-difference!"
+          "$argon2i$v=19$m=4096,t=3,p=1$Df+5L7/CaBEh5cLzFjVSag$eluxFfnCR8rQSQQSaAlaeJDz1m5DlkGaAE",
+          "somethingnewifference!"
         );
         return {
           errors: [
