@@ -1,3 +1,4 @@
+import { Post } from "./../../entities/Post";
 import { MyContext } from "./../../types";
 import { isAuth } from "./../../middlewares/isAuth";
 import {
@@ -21,6 +22,27 @@ export class PostCategoryResolver {
     @Ctx() { categoryLoader }: MyContext
   ) {
     return await categoryLoader.load(postCategory.categoryId);
+  }
+
+  @FieldResolver(() => Post)
+  async post(
+    @Root() postCategory: PostCategory,
+    @Ctx() { postLoader }: MyContext
+  ) {
+    return await postLoader.load(postCategory.postId);
+  }
+
+  @FieldResolver(() => Category)
+  async category(
+    @Root() postCategory: PostCategory,
+    @Ctx() { categoryLoader }: MyContext
+  ) {
+    return await categoryLoader.load(postCategory.categoryId);
+  }
+
+  @Query(() => [PostCategory], { nullable: true })
+  async postCategories(): Promise<PostCategory[] | null> {
+    return await PostCategory.find();
   }
 
   @Query(() => [PostCategory], { nullable: true })
