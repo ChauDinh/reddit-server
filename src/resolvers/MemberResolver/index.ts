@@ -25,12 +25,12 @@ export class MemberResolver {
   }
 
   @Query(() => [Member])
-  @UseMiddleware(isAuth)
+  // @UseMiddleware(isAuth)
   async members(
-    @Arg("publicationId") publicationId: number,
-    @Ctx() { req }: MyContext
+    @Arg("publicationId") publicationId: number
+    // @Ctx() { req }: MyContext
   ): Promise<Member[]> {
-    if (!req.session.userId) throw new Error("Not authenticated!");
+    // if (!req.session.userId) throw new Error("Not authenticated!");
 
     return await Member.find({
       where: {

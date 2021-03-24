@@ -59,14 +59,6 @@ class PostInput {
 
 @Resolver(Post)
 export class PostResolver {
-  // The textSnippet resolver for slicing the text of the post, @FieldResolver doesn't effect to database
-  // @FieldResolver(() => String)
-  // textSnippet(@Root() root: Post) {
-  //   return root.text.length > 100
-  //     ? root.text.slice(0, 100) + " ..."
-  //     : root.text;
-  // }
-
   @FieldResolver(() => User)
   async creator(@Root() post: Post, @Ctx() { userLoader }: MyContext) {
     return await userLoader.load(post.creatorId);
@@ -127,20 +119,6 @@ export class PostResolver {
       replacements
     );
 
-    // const queryBuilder = getConnection()
-    //   .getRepository(Post)
-    //   .createQueryBuilder("p")
-    //   .innerJoinAndSelect("p.creator", "u", 'u.id = p."creatorId"')
-    //   .orderBy('p."createdAt"', "DESC") // the newest would be displayed on the top
-    //   .take(realLimit + 1);
-
-    // if (cursor) {
-    //   queryBuilder.where('p."createdAt" < :cursor', {
-    //     cursor: new Date(parseInt(cursor)),
-    //   });
-    // }
-
-    // const posts = await queryBuilder.getMany();
     return {
       posts: posts.slice(0, realLimit),
       hasMore: posts.length === realLimit + 1,
@@ -245,7 +223,6 @@ export class PostResolver {
   }
 
   @Query(() => PaginatedPosts, { nullable: true })
-  @UseMiddleware(isAuth)
   async postsByPublicationId(
     @Arg("publicationId", () => Int) publicationId: number,
     @Arg("limit", () => Int) limit: number,

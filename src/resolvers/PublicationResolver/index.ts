@@ -63,8 +63,16 @@ export class PublicationResolver {
       // publication is private
 
       // checking whether user login or not
-      if (!req.session.userId)
-        throw new Error("The publication is for members only!");
+      if (!req.session.userId) {
+        return {
+          errors: [
+            {
+              field: "authentication",
+              message: "You have to login to see publication's content!",
+            },
+          ],
+        };
+      }
 
       // checking whether user is a member or not
       const userId = req.session.userId;
@@ -78,7 +86,7 @@ export class PublicationResolver {
         return {
           errors: [
             {
-              field: "auth",
+              field: "authorization",
               message: "This publication is for members only!",
             },
           ],
