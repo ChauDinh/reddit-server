@@ -159,6 +159,7 @@ export class PostResolver {
       select p.* 
       from post p
       where p."creatorId" = ${creatorId}
+      and p."publicationId" IS NULL
       ${cursor ? `and p."createdAt" < $2` : ""}
       order by p."createdAt" DESC
       limit $1
