@@ -56,7 +56,6 @@ class PostInput {
   @Field(() => Number, { nullable: true })
   publicationId?: number;
 }
-
 @Resolver(Post)
 export class PostResolver {
   @FieldResolver(() => User)
@@ -119,6 +118,9 @@ export class PostResolver {
       replacements
     );
 
+    console.log("[POST RESULT]: ", posts.length);
+    console.log("[REPLACEMENT]: ", replacements);
+
     return {
       posts: posts.slice(0, realLimit),
       hasMore: posts.length === realLimit + 1,
@@ -160,7 +162,13 @@ export class PostResolver {
       from post p
       where p."creatorId" = ${creatorId}
       and p."publicationId" IS NULL
-      ${cursor ? `and p."createdAt" < $2` : ""}
+      ${
+        cursor
+          ? `
+        and p."createdAt" < $2
+      `
+          : ""
+      }
       order by p."createdAt" DESC
       limit $1
     `,
@@ -193,29 +201,34 @@ export class PostResolver {
       replacement.push(new Date(parseInt(cursor)));
     }
 
-    const postsInFollowingPublications = await getConnection().query(`
+    const postsInFollowingPublications = await getConnection().query(
+      `
       select p.title as publication_title, array_agg(p2.id) as posts from member
       inner join publication p on member."publicationId" = p.id
       inner join public.user u on member."userId" = u.id
       inner join public.post p2 on p.id = p2."publicationId"
       where member."userId" = ${req.session.userId}
       group by p.title
-    `);
-
-    console.log("[POSTS DATA]: ", postsInFollowingPublications);
+    `
+    );
 
     postsInFollowingPublications.map((response: any) =>
       response.posts.map((ids: any) => postIds.push(ids))
     );
 
-    console.log("[POST IDS]: ", postIds);
-
-    const postsResult = await getConnection().query(`
-      select * from public.post p
+    const postsResult = await getConnection().query(
+      `
+      select p.* from public.post p
       where p.id in (${postIds})
-    `);
+      ${cursor ? `and p."createdAt" < $2` : ""}
+      order by p."createdAt" DESC
+      limit $1
+    `,
+      replacement
+    );
 
-    console.log("[POST RESULTS]: ", postsResult);
+    console.log("[POST in publication]: ", postsResult);
+    console.log("[Pub replacement]: ", replacement);
 
     return {
       posts: postsResult.slice(0, realLimit),
