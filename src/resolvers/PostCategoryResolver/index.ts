@@ -11,6 +11,8 @@ import {
   Root,
   Query,
 } from "type-graphql";
+import { getConnection } from "typeorm";
+
 import { PostCategory } from "../../entities/PostCategory";
 import { Category } from "../../entities/Category";
 
@@ -56,17 +58,26 @@ export class PostCategoryResolver {
     });
   }
 
-  @Mutation(() => PostCategory)
+  @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async createPostCategory(
     @Arg("postId") postId: number,
     @Arg("categoryId") categoryId: number,
+    @Arg("postTitle") postTitle: string,
+    @Arg("categoryTitle") categoryTitle: string,
+    @Arg("creator") creator: string,
     @Ctx() { req }: MyContext
-  ): Promise<PostCategory | null> {
+  ) {
     if (!req.session.userId) throw new Error("Not Authenticated!");
-    return await PostCategory.create({
-      postId,
-      categoryId,
-    }).save();
+
+    await getConnection().query(
+      `
+      insert into post_category ("postId", "categoryId", "postTitle", "categoryTitle", "document_with_weights")
+      values ($1, $2, $3, $4, to_tsvector('${postTitle}') || to_tsvector('${categoryTitle}') || to_tsvector('${creator}'))
+    `,
+      [postId, categoryId, postTitle, categoryTitle]
+    );
+
+    return true;
   }
 }

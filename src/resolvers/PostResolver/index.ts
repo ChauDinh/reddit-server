@@ -118,9 +118,6 @@ export class PostResolver {
       replacements
     );
 
-    console.log("[POST RESULT]: ", posts.length);
-    console.log("[REPLACEMENT]: ", replacements);
-
     return {
       posts: posts.slice(0, realLimit),
       hasMore: posts.length === realLimit + 1,
@@ -227,9 +224,6 @@ export class PostResolver {
       replacement
     );
 
-    console.log("[POST in publication]: ", postsResult);
-    console.log("[Pub replacement]: ", replacement);
-
     return {
       posts: postsResult.slice(0, realLimit),
       hasMore: postsResult.length === realLimit + 1,
@@ -308,7 +302,6 @@ export class PostResolver {
     }).save();
 
     // TODO: create post_category by postId
-    console.log(postCreated.id);
 
     return { post: postCreated };
   }

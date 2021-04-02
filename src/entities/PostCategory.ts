@@ -1,6 +1,6 @@
 import { Post } from "./Post";
 import { Category } from "./Category";
-import { Entity, BaseEntity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Entity, BaseEntity, ManyToOne, PrimaryColumn, Column } from "typeorm";
 import { ObjectType, Field } from "type-graphql";
 /**
  * The join table with two one-to-many relationships:
@@ -28,4 +28,15 @@ export class PostCategory extends BaseEntity {
     onDelete: "CASCADE",
   })
   post: Post;
+
+  @Column("tsvector", { select: false })
+  document_with_weights: any;
+
+  @Field(() => String)
+  @Column({ type: "text" })
+  postTitle: String;
+
+  @Field(() => String)
+  @Column({ type: "text" })
+  categoryTitle: string;
 }
