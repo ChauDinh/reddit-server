@@ -73,7 +73,7 @@ export class PostCategoryResolver {
     await getConnection().query(
       `
       insert into post_category ("postId", "categoryId", "postTitle", "categoryTitle", "document_with_weights")
-      values ($1, $2, $3, $4, to_tsvector('${postTitle}') || to_tsvector('${categoryTitle}') || to_tsvector('${creator}'))
+      values ($1, $2, $3, $4, setweight(to_tsvector('${postTitle}'), 'A') || setweight(to_tsvector('${creator}'), 'B') || setweight(to_tsvector(coalesce('${categoryTitle}', '')), 'C'))
     `,
       [postId, categoryId, postTitle, categoryTitle]
     );
