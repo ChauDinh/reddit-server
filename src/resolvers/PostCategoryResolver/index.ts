@@ -61,12 +61,11 @@ export class PostCategoryResolver {
   @Query(() => [PostCategory], { nullable: true })
   async search(@Arg("tokens") tokens: string): Promise<PostCategory[] | null> {
     if (tokens.length === 0) return null;
-    const search = tokens.split(" ").join(" & ");
     return await getConnection().query(
       `
         select * from post_category
-        where document_with_weights @@ plainto_tsquery('${search}')
-        order by ts_rank_cd(document_with_weights, plainto_tsquery('${search}')) desc;
+        where document_with_weights @@ plainto_tsquery('${tokens}')
+        order by ts_rank_cd(document_with_weights, plainto_tsquery('${tokens}')) desc;
       `
     );
   }
