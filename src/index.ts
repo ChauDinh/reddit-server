@@ -40,6 +40,8 @@ import { UserCategory } from "./entities/UserCategory";
 import { UserCategoryResolver } from "./resolvers/UserCategoryResolver";
 import { UserProfileResolver } from "./resolvers/UserProfileResolver";
 import { UserProfile } from "./entities/UserProfile";
+import { PostNotification } from "./entities/PostNotification";
+import { PostNotificationResolver } from "./resolvers/PostNotificationResolver/index";
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 4000;
 
@@ -55,7 +57,7 @@ const main = async () => {
     type: "postgres",
     url: process.env.DATABASE_URL,
     logging: true,
-    synchronize: false, // typeORM will automatically create tables for you
+    synchronize: true, // typeORM will automatically create tables for you
     // migrations: [path.join(__dirname, "./migrations/*")],
     entities: [
       User,
@@ -71,6 +73,7 @@ const main = async () => {
       Member,
       UserCategory,
       UserProfile,
+      PostNotification,
     ],
   });
 
@@ -128,6 +131,7 @@ const main = async () => {
         MemberResolver,
         UserCategoryResolver,
         UserProfileResolver,
+        PostNotificationResolver,
       ],
       validate: false,
     }),

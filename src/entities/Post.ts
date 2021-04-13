@@ -14,6 +14,7 @@ import { Comment } from "./Comment";
 import { Publication } from "./Publication";
 import { PostCategory } from "./PostCategory";
 import { Updoot } from "./Updoot";
+import { PostNotification } from "./PostNotification";
 
 // Convert entity to object type so that we can use to declare graphql type in resolvers
 @ObjectType()
@@ -73,6 +74,15 @@ export class Post extends BaseEntity {
     onDelete: "CASCADE",
   })
   comments: Comment[];
+
+  @OneToMany(
+    () => PostNotification,
+    (postNotification) => postNotification.post,
+    {
+      onDelete: "CASCADE",
+    }
+  )
+  postNotifications: PostNotification[];
 
   @Field(() => Boolean)
   @Column({ default: true })

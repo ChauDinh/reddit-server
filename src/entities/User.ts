@@ -20,6 +20,7 @@ import { Subscription } from "./Subscription";
 import { Publication } from "./Publication";
 import { Member } from "./Member";
 import { DirectMessage } from "./DirectMessage";
+import { PostNotification } from "./PostNotification";
 
 // Convert entity to object type so that we can use to declare graphql type in resolvers
 @ObjectType()
@@ -87,4 +88,13 @@ export class User extends BaseEntity {
 
   @OneToOne(() => UserProfile, (profile) => profile.user)
   profile: UserProfile;
+
+  @OneToMany(
+    () => PostNotification,
+    (postNotification) => postNotification.user,
+    {
+      onDelete: "CASCADE",
+    }
+  )
+  postNotifications: PostNotification[];
 }
