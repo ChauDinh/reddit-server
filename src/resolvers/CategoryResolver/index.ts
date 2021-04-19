@@ -33,6 +33,13 @@ export class CategoryResolver {
     });
   }
 
+  @Query(() => Category, { nullable: true })
+  async category(@Arg("id") id: number): Promise<Category | undefined> {
+    return await Category.findOne({
+      where: { id: id },
+    });
+  }
+
   @Mutation(() => Category)
   @UseMiddleware(isAuth)
   async createCategory(

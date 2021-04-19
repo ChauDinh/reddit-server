@@ -59,6 +59,17 @@ export class PostCategoryResolver {
   }
 
   @Query(() => [PostCategory], { nullable: true })
+  async postCategoriesByCategoryId(
+    @Arg("categoryId") categoryId: number
+  ): Promise<PostCategory[] | null> {
+    return await PostCategory.find({
+      where: {
+        categoryId: categoryId,
+      },
+    });
+  }
+
+  @Query(() => [PostCategory], { nullable: true })
   async search(@Arg("tokens") tokens: string): Promise<PostCategory[] | null> {
     if (tokens.length === 0) return null;
     return await getConnection().query(
